@@ -1,0 +1,26 @@
+{
+  "name": "HangInThere",
+  "productName": "HangInThere",
+  "version": "0.0.1",
+  "description": "A native app wrapper for hangouts.google.com.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "./scripts/build.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thomasw/hanginthere.git"
+  },
+  "keywords": [],
+  "author": "Thomas Welfley",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/thomasw/hanginthere"
+  },
+  "homepage": "https://github.com/thomasw/hanginthere",
+  "devDependencies": {
+    "electron-packager": "^5.2.0",
+    "electron-prebuilt": "^0.36.0"
+  }
+}
