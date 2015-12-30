@@ -4,18 +4,26 @@ cd "`dirname $0`/.."
 
 set -e
 
-VERSION=`node -e "console.log(require('./package.json').version);"`
-NAME=`node -e "console.log(require('./package.json').productName);"`
+platform=${1:-darwin}
+arch=${2:-x64}
 
-echo "Building $NAME $VERSION"
+version=`node -e "console.log(require('./package.json').version);"`
+name=`node -e "console.log(require('./package.json').productName);"`
+electron_version=`
+  npm ll -p --depth=0 electron-prebuilt |
+  grep -o "@.*:" |
+  sed 's/.$//; s/^.//'
+`
 
-node_modules/.bin/electron-packager . $NAME \
---platform=darwin \
---arch=x64 \
---version=0.36.2 \
---icon=src/img/icon.icns \
---out=build \
---app-version=$VERSION \
---overwrite
+echo "Building $name $version using Electron $electron_version"
 
-open build/HangInThere-darwin-x64/HangInThere.app
+node_modules/.bin/electron-packager . $name \
+  --platform=$platform \
+  --arch=$arch \
+  --version=$electron_version \
+  --icon=src/img/icon.icns \
+  --out=build \
+  --app-version=$version \
+  --overwrite
+
+open build/HangInThere-$platform-$arch/$name.app
