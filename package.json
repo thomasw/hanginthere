@@ -22,5 +22,8 @@
   "devDependencies": {
     "electron-packager": "^5.2.0",
     "electron-prebuilt": "^0.36.0"
+  },
+  "dependencies": {
+    "lodash": "^3.10.1"
   }
 }
