@@ -4,8 +4,8 @@ cd "`dirname $0`/.."
 
 set -e
 
-VERSION=`node -e "console.log(require('./package.json').version);"`;
-NAME=`node -e "console.log(require('./package.json').productName);"`;
+VERSION=`node -e "console.log(require('./package.json').version);"`
+NAME=`node -e "console.log(require('./package.json').productName);"`
 
 echo "Building $NAME $VERSION"
 
@@ -16,6 +16,6 @@ node_modules/.bin/electron-packager . $NAME \
 --icon=src/img/icon.icns \
 --out=build \
 --app-version=$VERSION \
---overwrite;
+--overwrite
 
-open build/HangInThere-darwin-x64/HangInThere.app;
+open build/HangInThere-darwin-x64/HangInThere.app
