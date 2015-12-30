@@ -8,14 +8,23 @@
         margin: 0;
         padding: 0;
         height: 100%;
+        width: 100%;
       }
     </style>
   </head>
   <body>
-    <webview class="google" src="http://hangouts.google.com/" plugins="on" disablewebsecurity="on">
-      <div class="indicator"></div>
+    <webview
+      class="google"
+      src="http://hangouts.google.com/"
+      plugins="on"
+      disablewebsecurity="on"
+      allowpopups="on">
     </webview>
 
-    <script>console.log("Hello, world!");</script>
+    <script>
+      // The webview doesn't initialize unless I reference console somewhere
+      // in this file. I have no idea why.
+      console;
+    </script>
   </body>
 </html>
