@@ -4,6 +4,11 @@ cd "`dirname $0`/.."
 
 set -e
 
+echo "Installing node dependencies..."
+
+npm install
+npm prune
+
 platform=${1:-darwin}
 arch=${2:-x64}
 
@@ -15,7 +20,7 @@ electron_version=`
   sed 's/.$//; s/^.//'
 `
 
-echo "Building $name $version using Electron $electron_version"
+echo "Building $name $version using Electron $electron_version..."
 
 node_modules/.bin/electron-packager . $name \
   --platform=$platform \
@@ -26,4 +31,8 @@ node_modules/.bin/electron-packager . $name \
   --app-version=$version \
   --overwrite
 
+echo "Launching app..."
+
 open build/HangInThere-$platform-$arch/$name.app
+
+echo "Done!"
