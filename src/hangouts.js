@@ -19,6 +19,8 @@ class HangoutsWindow extends BrowserWindow {
     super(_.assign({}, defaults, settings));
 
     this.loadURL('file://' + __dirname + '/index.html');
+
+    this.webContents.on("will-navigate", function(e) { e.preventDefault(); });
   }
 
 }
