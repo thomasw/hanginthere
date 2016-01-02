@@ -17,20 +17,19 @@ class WindowManager {
   }
 
   addWindow(window) {
-    var window_manager = this;
-
     this.windows.push(window);
 
-    console.info('Window list after addition:', this.windows);
+    window.on('closed', this.removeWindow.bind(this, window));
 
-    window.on('closed', function() {
-      window_manager.removeWindow(this);
-    });
+    console.log('Window added. Open windows:', this.windows.length);
   };
 
   removeWindow(window) {
-    this.windows = this.windows.filter(function(x) { x !== this;});
-    console.info('Window list after removal:', this.windows);
+    this.windows = this.windows.filter(function(x) {
+      return x !== window;
+    });
+
+    console.info('Window removed. Open windows:', this.windows.length);
   }
 }
 
