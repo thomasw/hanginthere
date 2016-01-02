@@ -20,7 +20,7 @@ class WindowManager {
     var window_manager = this;
 
     this.windows.push(window);
-    
+
     console.info('Window list after addition:', this.windows);
 
     window.on('closed', function() {
@@ -28,7 +28,7 @@ class WindowManager {
     });
   };
 
-  removeWindow(window){
+  removeWindow(window) {
     this.windows = this.windows.filter(function(x) { x !== this;});
     console.info('Window list after removal:', this.windows);
   }
