@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('path');
+
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
 const _ = require('lodash');
@@ -13,12 +15,15 @@ class HangoutsWindow extends BrowserWindow {
       width: 1500,
       height: 768,
       title: 'HangInThere',
-      icon: 'file://'+ __dirname + '/img/icon.png'
+      icon: path.join(__dirname, 'img/icon.png'),
+      webPreferences: {
+        preload: path.join(__dirname, 'spellcheck.js')
+      }
     };
 
     super(_.assign({}, defaults, settings));
 
-    this.loadURL('file://' + __dirname + '/index.html');
+    this.loadURL('https://hangouts.google.com/');
 
     this.webContents.on("will-navigate", function(e) { e.preventDefault(); });
   }
