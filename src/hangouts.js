@@ -1,10 +1,10 @@
 'use strict';
 
 const path = require('path');
+const _ = require('lodash');
 
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
-const _ = require('lodash');
 
 class HangoutsWindow extends BrowserWindow {
 
@@ -24,8 +24,6 @@ class HangoutsWindow extends BrowserWindow {
     super(_.assign({}, defaults, settings));
 
     this.loadURL('https://hangouts.google.com/');
-
-    this.webContents.on("will-navigate", function(e) { e.preventDefault(); });
   }
 
 }

@@ -6,6 +6,7 @@ const HangoutsWindow = require('./hangouts.js');
 const WindowManager = require('./windows.js');
 
 const MenuBuilder = require('./menus.js');
+const bindWindowEvents = require('./window-events');
 
 let windowManager = new WindowManager();
 let menuBuilder = new MenuBuilder({
@@ -40,6 +41,7 @@ function initialize_hangouts_window() {
 }
 
 function track_window(e, window) {
+  bindWindowEvents(window);
   windowManager.addWindow(window);
 }
 
