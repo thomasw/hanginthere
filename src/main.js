@@ -7,7 +7,7 @@ const WindowManager = require('./windows.js');
 
 const MenuBuilder = require('./menus.js');
 
-let windowManager = new WindowManager({app: app});
+let windowManager = new WindowManager();
 let menuBuilder = new MenuBuilder({
   appName: app.getName(),
   Menu: electron.Menu
@@ -36,7 +36,19 @@ function initialize_menu() {
 }
 
 function initialize_hangouts_window() {
-  windowManager.addWindow(new HangoutsWindow());
+  new HangoutsWindow();
+}
+
+function track_window(e, window) {
+  windowManager.addWindow(window);
+}
+
+function windowsAllClosed() {
+  // On OS X it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform != 'darwin') {
+    app.quit();
+  }
 }
 
 menuBuilder.on('new_window-clicked', initialize_hangouts_window);
@@ -47,3 +59,5 @@ menuBuilder.on('dev_tools-clicked', toggle_dev_tools_for_window);
 
 app.on('ready', initialize_hangouts_window);
 app.on('ready', initialize_menu);
+app.on('browser-window-created', track_window);
+app.on('window-all-closed', windowsAllClosed);

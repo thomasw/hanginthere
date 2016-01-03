@@ -1,19 +1,8 @@
 'use strict';
 
 class WindowManager {
-  constructor(settings) {
+  constructor(options) {
     this.windows = [];
-    this.app = settings.app;
-
-    this.app.on('window-all-closed', this.windowsAllClosed);
-  }
-
-  windowsAllClosed() {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform != 'darwin') {
-      app.quit();
-    }
   }
 
   addWindow(window) {
@@ -21,15 +10,15 @@ class WindowManager {
 
     window.on('closed', this.removeWindow.bind(this, window));
 
-    console.log('Window added. Open windows:', this.windows.length);
-  };
+    console.log('Window opened. Open windows:', this.windows.length);
+  }
 
   removeWindow(window) {
     this.windows = this.windows.filter(function(x) {
       return x !== window;
     });
 
-    console.info('Window removed. Open windows:', this.windows.length);
+    console.info('Window closed. Open windows:', this.windows.length);
   }
 }
 
