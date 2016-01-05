@@ -17,7 +17,7 @@ class HangoutsWindow extends BrowserWindow {
       title: 'HangInThere',
       icon: path.join(__dirname, 'img/icon.png'),
       webPreferences: {
-        preload: path.join(__dirname, 'spellcheck.js')
+        preload: path.join(__dirname, 'hangouts-preload.js')
       }
     };
 
