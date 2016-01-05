@@ -20,4 +20,4 @@ ipcRenderer.on('notification', function() {
     remote.getCurrentWindow().show();
   });
 
-})
+});

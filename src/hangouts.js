@@ -1,5 +1,6 @@
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 
@@ -24,6 +25,18 @@ class HangoutsWindow extends BrowserWindow {
     super(_.assign({}, defaults, settings));
 
     this.loadURL('https://hangouts.google.com/');
+    this.cssOverrides = path.join(__dirname, 'hangouts-injected.css');
+
+    this.webContents.on('dom-ready', function() {
+      this.injectCSS(this.cssOverrides);
+    }.bind(this));
+  }
+
+  injectCSS(css_file) {
+    var cssInjector = function(err, data) {
+      this.webContents.insertCSS(data);
+    }.bind(this);
+    fs.readFile(css_file, 'utf8', cssInjector);
   }
 
 }
