@@ -1,11 +1,12 @@
 'use strict';
 
-const shell = require('electron').shell;
+const shell = require('shell');
 
+const videoChatURLs = [
+  'https://talkgadget.google.com/', 'https://plus.google.com/hangouts/'];
 const allowedUrlPrefixes = [
-  'https://hangouts.google.com/', 'https://talkgadget.google.com/',
-  'https://accounts.google.com/'];
-
+  'https://hangouts.google.com/', 'https://accounts.google.com/'
+].concat(videoChatURLs);
 
 var webContentHandlers = {
   'will-navigate': function(e, url) {
@@ -29,6 +30,18 @@ var webContentHandlers = {
       e.preventDefault();
       shell.openExternal(url);
     }
+  },
+  'media-started-playing': function(e) {
+    var url = this.getURL();
+    var isVideoChat = allowedUrlPrefixes.some(function(x) {
+      url.startsWith(x);
+    });
+
+    if(isVideoChat) {
+      return;
+    }
+
+    this.send('notification');
   }
 };
 
