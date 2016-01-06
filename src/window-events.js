@@ -33,11 +33,16 @@ var webContentHandlers = {
   },
   'media-started-playing': function(e) {
     var url = this.getURL();
-    var isVideoChat = allowedUrlPrefixes.some(function(x) {
-      url.startsWith(x);
+    var isVideoChat = videoChatURLs.some(function(x) {
+      return url.startsWith(x);
     });
 
+    console.log(url, 'made a sound!');
+
     if(isVideoChat) {
+      console.log(
+        'Ignoring sounds from window.', url, 'Video chat:', isVideoChat);
+      this.removeAllListeners(['media-started-playing']);
       return;
     }
 
