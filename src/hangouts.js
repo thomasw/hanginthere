@@ -19,7 +19,8 @@ class HangoutsWindow extends BrowserWindow {
       icon: path.join(__dirname, 'img/icon.png'),
       webPreferences: {
         preload: path.join(__dirname, 'hangouts-preload.js')
-      }
+      },
+      titleBarStyle: 'hidden-inset'
     };
 
     super(_.assign({}, defaults, settings));
