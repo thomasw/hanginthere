@@ -32,7 +32,7 @@ class MenuBuilder {
           id: 'quit'
         }
       ]
-    }
+    };
 
     this.editMenu = {
       label: 'Edit',
@@ -71,7 +71,7 @@ class MenuBuilder {
           role: 'selectall'
         }
       ]
-    }
+    };
 
     this.viewMenu = {
       label: 'View',
@@ -92,7 +92,7 @@ class MenuBuilder {
           id: 'dev_tools'
         }
       ]
-    }
+    };
 
     this.windowMenu = {
       label: 'Window',
@@ -109,7 +109,7 @@ class MenuBuilder {
           role: 'close'
         }
       ]
-    }
+    };
 
     this.darwinAppMenu = {
       label: this.appName,
@@ -149,7 +149,7 @@ class MenuBuilder {
           id: 'quit'
         }
       ]
-    }
+    };
 
     this.darwinWindowMenu = _.cloneDeep(this.windowMenu);
     this.darwinWindowMenu.submenu.push(
