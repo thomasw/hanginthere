@@ -1,5 +1,7 @@
 'use strict';
 
+/* globals Notification */
+
 const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
 const webFrame = require('web-frame');
