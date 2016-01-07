@@ -162,11 +162,11 @@ class MenuBuilder {
       }
     );
 
-    this.template = this.get_template();
+    this.template = this.getTemplate();
     this.menu = this.Menu.buildFromTemplate(this.template);
   }
 
-  get_template() {
+  getTemplate() {
     var template = [
       this.fileMenu, this.editMenu, this.viewMenu, this.windowMenu];
 
@@ -176,20 +176,20 @@ class MenuBuilder {
         this.darwinWindowMenu];
     }
 
-    this.bind_click_handler(template);
+    this.bindClickHandlers(template);
 
     return template;
   }
 
-  bind_click_handler(template) {
+  bindClickHandlers(template) {
     for (var menuItem of template) {
       for (var subMenuItem of menuItem.submenu) {
-        subMenuItem.click = this.menu_item_clicked.bind(this);
+        subMenuItem.click = this.menuItemClicked.bind(this);
       }
     }
   }
 
-  menu_item_clicked(menuItem, activeWindow) {
+  menuItemClicked(menuItem, activeWindow) {
     console.log('"' + menuItem.label + '" menu item invoked.');
     this.emit('menu-item-clicked', menuItem, activeWindow);
 
