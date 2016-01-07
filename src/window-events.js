@@ -30,23 +30,6 @@ var webContentHandlers = {
       e.preventDefault();
       shell.openExternal(url);
     }
-  },
-  'media-started-playing': function(e) {
-    var url = this.getURL();
-    var isVideoChat = videoChatURLs.some(function(x) {
-      return url.startsWith(x);
-    });
-
-    console.log(url, 'made a sound!');
-
-    if(isVideoChat) {
-      console.log(
-        'Ignoring sounds from window.', url, 'Video chat:', isVideoChat);
-      this.removeAllListeners(['media-started-playing']);
-      return;
-    }
-
-    this.send('notification');
   }
 };
 
