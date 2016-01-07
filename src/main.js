@@ -2,8 +2,8 @@
 const electron = require('electron');
 const app = electron.app;
 
-const HangoutsWindow = require('./hangouts.js');
-const WindowManager = require('./windows.js');
+const HangoutsWindow = require('./hangouts/hangouts-window.js');
+const WindowManager = require('./window-manager.js');
 
 const MenuBuilder = require('./menus.js');
 const bindWindowEvents = require('./window-events');

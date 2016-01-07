@@ -16,9 +16,9 @@ class HangoutsWindow extends BrowserWindow {
       width: 1500,
       height: 768,
       title: 'HangInThere',
-      icon: path.join(__dirname, 'img/icon.png'),
+      icon: path.join(__dirname, '../img/icon.png'),
       webPreferences: {
-        preload: path.join(__dirname, 'hangouts-preload.js')
+        preload: path.join(__dirname, 'preload.js')
       },
       titleBarStyle: 'hidden-inset'
     };
@@ -26,7 +26,7 @@ class HangoutsWindow extends BrowserWindow {
     super(_.assign({}, defaults, settings));
 
     this.loadURL('https://hangouts.google.com/');
-    this.cssOverrides = path.join(__dirname, 'hangouts-injected.css');
+    this.cssOverrides = path.join(__dirname, 'injected.css');
 
     this.webContents.on('dom-ready', function() {
       this.injectCSS(this.cssOverrides);
