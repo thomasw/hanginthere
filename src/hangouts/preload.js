@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals Notification */
+/* globals Notification, MutationObserver */
 
 const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
@@ -12,7 +12,7 @@ const ContactListMonitor = require('./contact-list-monitor');
 console.info('Preload script injected.');
 
 var locale = remote.app.getLocale();
-var contactListMonitor = new ContactListMonitor();
+var contactListMonitor = new ContactListMonitor({Observer: MutationObserver});
 
 
 function monitorContactList() {

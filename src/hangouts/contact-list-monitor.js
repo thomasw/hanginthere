@@ -1,6 +1,7 @@
 'use strict';
 
-const _ = require('lodash');
+
+
 const EventEmitter = require('events');
 const util = require('util');
 
@@ -52,10 +53,11 @@ class Message {
 
 class ContactListMonitor {
   constructor(config) {
+    this._Observer = config.Observer;
     this.contactList = null;
     this.lastMessage = null;
 
-    this.observer = new MutationObserver(this._parseMutations.bind(this));
+    this.observer = new this._Observer(this._parseMutations.bind(this));
   }
 
   observe(target) {
@@ -63,7 +65,7 @@ class ContactListMonitor {
 
     this.contactList = target;
     this.lastMessage = this._getTopMessage();
-    
+
     this.observer.observe(target, {childList: true});
   }
 
@@ -96,7 +98,7 @@ class ContactListMonitor {
 
   _isNewMessage(message) {
     if (this.lastMessage === null) {
-      return message.isMarkedNew && message.age == 'Now';
+      return message.isMarkedNew && message.age === 'Now';
     }
 
     return !message.isEqual(this.lastMessage) && message.isMarkedNew;
@@ -105,4 +107,4 @@ class ContactListMonitor {
 
 util.inherits(ContactListMonitor, EventEmitter);
 
-module.exports = ContactListMonitor
+module.exports = ContactListMonitor;
