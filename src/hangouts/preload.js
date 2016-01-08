@@ -14,11 +14,23 @@ console.info('Preload script injected.');
 var locale = remote.app.getLocale();
 var contactListMonitor = new ContactListMonitor({Observer: MutationObserver});
 
-
 function monitorContactList() {
-  var contactList = document.querySelector('#gtn-roster-iframe-id-b');
-  contactList = contactList.contentDocument;
-  contactList = contactList.querySelector('.c-m.c-m-Ed.al.Mz.Ln');
+  var contactList;
+
+  // Abort and retry if the contactList isn't available to us yet.
+  try {
+    contactList = document.querySelector('#gtn-roster-iframe-id-b');
+    contactList = contactList.contentDocument;
+    contactList = contactList.querySelector('.c-m.c-m-Ed.al.Mz.Ln');
+  } catch(e) {
+    console.error('Contact list retrieval failed.', e, e.stack);
+  }
+
+  if(!contactList) {
+    console.error('Aborting ContactListMonitor setup. Retrying in 2 seconds.');
+    setTimeout(monitorContactList, 2000);
+    return;
+  }
 
   contactListMonitor.observe(contactList);
 }
@@ -41,6 +53,6 @@ function notifyUser(message) {
   ipcRenderer.send('message-received', message);
 }
 
+setTimeout(monitorContactList, 1000);
 webFrame.setSpellCheckProvider(locale, true, SpellCheckProvider);
-setTimeout(monitorContactList, 5000);
 contactListMonitor.on('message-received', notifyUser);
