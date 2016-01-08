@@ -1,13 +1,16 @@
 'use strict';
 const electron = require('electron');
 const app = electron.app;
+const ipcMain = electron.ipcMain;
 
 const HangoutsWindow = require('./hangouts/hangouts-window');
 const WindowManager = require('./window-manager');
+const DockNotifier = require('./dock-notifier');
 
 const MenuBuilder = require('./menus');
 const bindWindowEvents = require('./window-events');
 
+let dockNotifier = new DockNotifier({dock: app.dock});
 let windowManager = new WindowManager();
 let menuBuilder = new MenuBuilder({
   appName: app.getName(),
@@ -63,3 +66,6 @@ app.on('ready', initialize_hangouts_window);
 app.on('ready', initialize_menu);
 app.on('browser-window-created', track_window);
 app.on('window-all-closed', windowsAllClosed);
+app.on('browser-window-focus', dockNotifier.resetDock.bind(dockNotifier));
+
+ipcMain.on('message-received', dockNotifier.messageReceived.bind(dockNotifier));

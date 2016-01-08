@@ -38,6 +38,7 @@ function notifyUser(message) {
   });
 
   // Message main process for dock manipulation
+  ipcRenderer.send('message-received', message);
 }
 
 webFrame.setSpellCheckProvider(locale, true, SpellCheckProvider);
