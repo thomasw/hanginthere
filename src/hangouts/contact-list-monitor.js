@@ -1,32 +1,43 @@
 'use strict';
 
-
-
 const EventEmitter = require('events');
 const util = require('util');
 
-
 class Message {
   constructor(config) {
-    this.dom_node = config.node;
-    this.node = config.node.cloneNode(true);
+    this.node = config.node;
 
     this.name = this._getName();
     this.iconURL = this._getIconURL();
     this.text = this._getText();
     this.isMarkedNew = this._isMarkedNew();
     this.age = this._getAge();
+    this.userNotified = this._userNotified();
   }
 
-  isEqual(message) {
-    return (
-      this.text === message.text &&
-      this.name === message.name &&
-      this.age === message.age);
+  markNotified() {
+    /*
+    To indicate we've fired a notification for a message, we inject a dom
+    element to flag it in a ocation we know will be entirely wiped out whenever
+    the hangouts window gets a new message. I initially attempted to use data
+    attributes for this on the text container, but this element isn't
+    removed/readded when new messages are received. The read state would
+    persists using that approach.
+    */
+    var readMarker = document.createElement('span');
+    readMarker.classList.add('hit_marked_notified');
+
+    this._getTextNode().appendChild(readMarker);
+
+    this.userNotified = true;
   }
 
   _querySelector(query) {
     return this.node.querySelector(query);
+  }
+
+  _userNotified() {
+    return this._querySelector('.hit_marked_notified') !== null;
   }
 
   _getName() {
@@ -37,8 +48,12 @@ class Message {
     return this._querySelector('.n291pb.uaxL4e img').getAttribute('src');
   }
 
+  _getTextNode() {
+    return this._querySelector('.ng.sQR2Rb');
+  }
+
   _getText() {
-    return this._querySelector('.ng.sQR2Rb').innerText;
+    return this._getTextNode().innerText;
   }
 
   _isMarkedNew() {
@@ -55,7 +70,6 @@ class ContactListMonitor {
   constructor(config) {
     this._Observer = config.Observer;
     this.contactList = null;
-    this.lastMessage = null;
 
     this.observer = new this._Observer(this._parseMutations.bind(this));
   }
@@ -64,7 +78,8 @@ class ContactListMonitor {
     console.log('Monitoring Contact List for new messages.');
 
     this.contactList = target;
-    this.lastMessage = this._getTopMessage();
+
+    this._getTopMessage().markNotified();
 
     this.observer.observe(target, {childList: true});
   }
@@ -78,11 +93,12 @@ class ContactListMonitor {
   _parseMutations(mutations) {
     var message = this._getTopMessage();
 
-    if (!this._isNewMessage(message)) {
+    if (message.userNotified || !message.isMarkedNew ) {
       return;
     }
 
-    this.lastMessage = message;
+    message.markNotified();
+
     this.emit('message-received', message);
   }
 
@@ -95,16 +111,7 @@ class ContactListMonitor {
 
     return new Message({node: newTopNode});
   }
-
-  _isNewMessage(message) {
-    if (this.lastMessage === null) {
-      return message.isMarkedNew && message.age === 'Now';
-    }
-
-    return !message.isEqual(this.lastMessage) && message.isMarkedNew;
-  }
 }
-
 util.inherits(ContactListMonitor, EventEmitter);
 
 module.exports = ContactListMonitor;

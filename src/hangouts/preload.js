@@ -46,7 +46,7 @@ function notifyUser(message) {
   notification.addEventListener('click', function() {
     console.log('Notification clicked.');
     remote.getCurrentWindow().show();
-    message.dom_node.querySelector('button').click();
+    message.node.querySelector('button').click();
   });
 
   // Message main process for dock manipulation
