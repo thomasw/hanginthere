@@ -1,11 +1,11 @@
 
 /* Hide notification menu and app drawer in upper right */
 
-#gbsfw, #gbwa, .gb_fc.gb_Vc.gb_R.gb_gc {
+#gbsfw, #gbwa, .gb_fc.gb_Vc.gb_R.gb_gc, .gb_gc.gb_Vc.gb_R.gb_hc {
   display: none;
 }
 
-.gb_7b.gb_Me.gb_R {
+.gb_8b.gb_Me.gb_R {
   min-width: 0 !important;
   margin-right: -300px;
 }
