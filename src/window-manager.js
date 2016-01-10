@@ -25,6 +25,24 @@ class WindowManager {
   activeWindow() {
     return this.BrowserWindow.getFocusedWindow();
   }
+
+  visibleWindows() {
+    return this.windows.filter(function(window) {
+      return !window.isMinimized();
+    });
+  }
+
+  activateNextWindow() {
+    var windows = this.visibleWindows();
+    var idx = windows.indexOf(this.activeWindow());
+    var nextWindow = windows[++idx] || windows[0];
+
+    if (!nextWindow) {
+      return;
+    }
+
+    nextWindow.focus();
+  }
 }
 
 module.exports = WindowManager;

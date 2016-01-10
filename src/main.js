@@ -68,9 +68,12 @@ menuBuilder.on('quit-clicked', app.quit);
 menuBuilder.on('reload-clicked', reload_window);
 menuBuilder.on('full_screen-clicked', full_screen_window);
 menuBuilder.on('dev_tools-clicked', toggle_dev_tools_for_window);
+menuBuilder.on(
+  'next_window-clicked', windowManager.activateNextWindow.bind(windowManager));
 
 app.on('ready', initialize_hangouts_window);
 app.on('ready', initialize_menu);
+
 app.on('browser-window-created', track_window);
 app.on('window-all-closed', windowsAllClosed);
 

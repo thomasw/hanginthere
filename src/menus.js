@@ -107,6 +107,9 @@ class MenuBuilder {
           label: 'Close',
           accelerator: 'CmdOrCtrl+W',
           role: 'close'
+        },
+        {
+          type: 'separator'
         }
       ]
     };
@@ -155,6 +158,11 @@ class MenuBuilder {
     this.darwinWindowMenu.submenu.push(
       {
         type: 'separator'
+      },
+      {
+        label: 'Next window',
+        accelerator: 'Cmd+`',
+        id: 'next_window'
       },
       {
         label: 'Bring All to Front',
