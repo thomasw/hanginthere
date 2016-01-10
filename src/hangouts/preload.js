@@ -53,6 +53,15 @@ function notifyUser(message) {
   ipcRenderer.send('message-received', message);
 }
 
-setTimeout(monitorContactList, 1000);
+function disableLogoClicks() {
+  document.querySelector('#gbq1 a').addEventListener('click', function(e) {
+    e.preventDefault();
+    return false;
+  });
+}
+
 webFrame.setSpellCheckProvider(locale, true, SpellCheckProvider);
 contactListMonitor.on('message-received', notifyUser);
+
+document.addEventListener('DOMContentLoaded', monitorContactList);
+document.addEventListener('DOMContentLoaded', disableLogoClicks);
