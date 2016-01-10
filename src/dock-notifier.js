@@ -3,6 +3,7 @@
 class DockNotifier {
   constructor(config) {
     this.dock = config.dock;
+    this._windowManager = config.windowManager;
 
     this.unreadCount = 0;
     this.lastDockAction = null;
@@ -15,7 +16,10 @@ class DockNotifier {
   }
 
   dockAlert() {
+    if (this._windowManager.activeWindow()) { return; }
+
     ++this.unreadCount;
+
     this.lastDockAction = this.dock.bounce();
     this.dock.setBadge(this.unreadCount.toString());
   }

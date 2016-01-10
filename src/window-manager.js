@@ -1,7 +1,8 @@
 'use strict';
 
 class WindowManager {
-  constructor(options) {
+  constructor(config) {
+    this.BrowserWindow = config.BrowserWindow;
     this.windows = [];
   }
 
@@ -19,6 +20,10 @@ class WindowManager {
     });
 
     console.info('Window closed. Open windows:', this.windows.length);
+  }
+
+  activeWindow() {
+    return this.BrowserWindow.getFocusedWindow();
   }
 }
 
