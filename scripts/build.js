@@ -24,7 +24,7 @@ var buildArgs = {
   arch: arch,
   platform: platform,
   version: electronPackageInfo.version,
-  icon: path.join(__dirname, '../src/imag/icon.cns'),
+  icon: path.join(__dirname, '../src/img/icon.cns'),
   out: path.join(__dirname, '../build/'),
   'app-version': version,
   overwrite: true
