@@ -8,5 +8,6 @@ https://hangouts.google.com/.
 On OS X, execute the following:
 
 ```shell
-scripts/build.sh
+npm install
+npm run build
 ```
