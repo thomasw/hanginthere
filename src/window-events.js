@@ -5,7 +5,10 @@ const shell = require('shell');
 const videoChatURLs = [
   'https://talkgadget.google.com/', 'https://plus.google.com/hangouts/'];
 const allowedUrlPrefixes = [
-  'https://hangouts.google.com/', 'https://accounts.google.com/'
+  'https://hangouts.google.com/', 'https://accounts.google.com/AddSession',
+  'https://accounts.google.com/ServiceLogin',
+  'https://accounts.google.com/ServiceLoginAuth',
+  'https://accounts.google.com/signin'
 ].concat(videoChatURLs);
 
 const disallowedUrlPrefixes = [];
