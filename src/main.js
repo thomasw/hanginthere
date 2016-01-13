@@ -5,6 +5,7 @@ const ipcMain = electron.ipcMain;
 
 const BrowserWindow = require('browser-window');
 const HangoutsWindow = require('./hangouts/hangouts-window');
+const ChatWindow = require('./chat/window');
 const WindowManager = require('./window-manager');
 const DockNotifier = require('./dock-notifier');
 
@@ -47,7 +48,7 @@ function initialize_menu() {
 }
 
 function initialize_hangouts_window() {
-  new HangoutsWindow();
+  new ChatWindow();
 }
 
 function track_window(e, window) {

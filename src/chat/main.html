@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>HangInThere</title>
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+    <nav class="account-selector">
+      <ul>
+        <li><a href="#!/account/1/">Account name</a></li>
+        <li><a href="#!/account/addd/">+</a></li>
+    </nav>
+    <section class="main">
+      <webview src="https://hangouts.google.com" preload="../hangouts/preload.js"></webview>
+    </section>
+  <script>
+    'use strict';
+
+    const fs = require('fs');
+    const path = require('path');
+
+    var webview = document.querySelector('.main webview');
+    var cssPath = path.join(__dirname, '../hangouts/injected.css')
+
+    var cssInjector = function(err, data) {
+      this.insertCSS(data);
+    };
+
+    webview.addEventListener('dom-ready', function() {
+      fs.readFile(cssPath, 'utf8', cssInjector.bind(webview));
+    });
+  </script>
+  </body>
+</html>
