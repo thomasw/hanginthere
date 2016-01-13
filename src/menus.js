@@ -20,6 +20,10 @@ class MenuBuilder {
           id: 'new_window'
         },
         {
+          label: 'Log out',
+          id: 'log_out'
+        },
+        {
           label: 'About ' + this.appName,
           role: 'about'
         },
@@ -121,6 +125,10 @@ class MenuBuilder {
           label: 'New chat window...',
           accelerator: 'CmdOrCtrl+N',
           id: 'new_window'
+        },
+        {
+          label: 'Log out',
+          id: 'log_out'
         },
         {
           label: 'About ' + this.appName,
