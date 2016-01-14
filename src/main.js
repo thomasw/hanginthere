@@ -2,6 +2,7 @@
 const electron = require('electron');
 const app = electron.app;
 const ipcMain = electron.ipcMain;
+const session = electron.session;
 
 const BrowserWindow = require('browser-window');
 const HangoutsWindow = require('./hangouts/hangouts-window');
@@ -42,6 +43,12 @@ function toggle_dev_tools_for_window(menuItem, activeWindow) {
   }
 }
 
+function logout() {
+  session.defaultSession.clearStorageData(()=>{
+    app.quit();
+  });
+}
+
 function initialize_menu() {
   electron.Menu.setApplicationMenu(menuBuilder.menu);
 }
@@ -70,6 +77,7 @@ menuBuilder.on('full_screen-clicked', full_screen_window);
 menuBuilder.on('dev_tools-clicked', toggle_dev_tools_for_window);
 menuBuilder.on(
   'next_window-clicked', windowManager.activateNextWindow.bind(windowManager));
+menuBuilder.on('log_out-clicked', logout);
 
 app.on('ready', initialize_hangouts_window);
 app.on('ready', initialize_menu);
