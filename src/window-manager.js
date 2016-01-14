@@ -1,8 +1,10 @@
 'use strict';
 
+const BrowserWindow = require('browser-window');
+
+
 class WindowManager {
   constructor(config) {
-    this.BrowserWindow = config.BrowserWindow;
     this.windows = [];
   }
 
@@ -23,7 +25,7 @@ class WindowManager {
   }
 
   activeWindow() {
-    return this.BrowserWindow.getFocusedWindow();
+    return BrowserWindow.getFocusedWindow();
   }
 
   visibleWindows() {

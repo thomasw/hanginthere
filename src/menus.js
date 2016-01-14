@@ -15,15 +15,6 @@ class MenuBuilder {
       label: 'File',
       submenu: [
         {
-          label: 'New chat window...',
-          accelerator: 'CmdOrCtrl+N',
-          id: 'new_window'
-        },
-        {
-          label: 'Log out',
-          id: 'log_out'
-        },
-        {
           label: 'About ' + this.appName,
           role: 'about'
         },
@@ -121,11 +112,6 @@ class MenuBuilder {
     this.darwinAppMenu = {
       label: this.appName,
       submenu: [
-        {
-          label: 'New chat window...',
-          accelerator: 'CmdOrCtrl+N',
-          id: 'new_window'
-        },
         {
           label: 'Log out',
           id: 'log_out'
