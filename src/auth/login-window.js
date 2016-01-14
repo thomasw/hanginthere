@@ -10,9 +10,9 @@ class LoginWindow extends BrowserWindow {
 
     var defaults = {
       minWidth: 800,
-      minHeight: 768,
+      minHeight: 800,
       width: 800,
-      height: 768,
+      height: 800,
       title: 'HangInThere',
       icon: path.join(__dirname, '../img/icon.png'),
       titleBarStyle: 'hidden-inset'
