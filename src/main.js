@@ -44,8 +44,9 @@ function toggle_dev_tools_for_window(menuItem, activeWindow) {
 }
 
 function logout() {
-  session.defaultSession.clearStorageData(()=>{});
-  app.quit();
+  session.defaultSession.clearStorageData(()=>{
+    app.quit();
+  });
 }
 
 function initialize_menu() {
