@@ -15,6 +15,11 @@ class MenuBuilder {
       label: 'File',
       submenu: [
         {
+          label: 'Add new account...',
+          accelerator: 'CmdOrCtrl+Shift+A',
+          id: 'add-account'
+        },
+        {
           label: 'About ' + this.appName,
           role: 'about'
         },
@@ -23,7 +28,7 @@ class MenuBuilder {
         },
         {
           label: 'Quit',
-          accelerator: 'CommandOrCtrl+Q',
+          accelerator: 'CmdOrCtrl+Q',
           id: 'quit'
         }
       ]
@@ -113,12 +118,17 @@ class MenuBuilder {
       label: this.appName,
       submenu: [
         {
-          label: 'Log out',
-          id: 'logout'
-        },
-        {
           label: 'About ' + this.appName,
           role: 'about'
+        },
+        {
+          label: 'Add new account...',
+          accelerator: 'CmdOrCtrl+Shift+A',
+          id: 'add-account'
+        },
+        {
+          label: 'Log out',
+          id: 'logout'
         },
         {
           type: 'separator'

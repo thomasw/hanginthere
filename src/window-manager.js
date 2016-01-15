@@ -34,6 +34,12 @@ class WindowManager {
     });
   }
 
+  closeAll() {
+    this.windows.forEach((window) => {
+      window.close();
+    });
+  }
+
   activateNextWindow() {
     var windows = this.visibleWindows();
     var idx = windows.indexOf(this.activeWindow());

@@ -57,6 +57,8 @@ class LoginWindow extends BrowserWindow {
   loginSuccess() {
     console.log('Account added succesfully.');
 
+    this.emit('account-added');
+
     this.destroy();
   }
 

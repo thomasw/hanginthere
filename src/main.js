@@ -4,6 +4,8 @@ const app = electron.app;
 const ipcMain = electron.ipcMain;
 const session = electron.session;
 
+const _ = require('lodash');
+
 const AccountManager = require('./auth/accounts');
 const LoginWindow = require('./auth/login-window');
 const ChatWindow = require('./chat/window');
@@ -25,7 +27,7 @@ let menuBuilder = new MenuBuilder({
   appName: app.getName(),
   Menu: electron.Menu
 });
-let accounts = [];
+let accounts;
 
 function reloadWindow(menuItem, activeWindow) {
   activeWindow && activeWindow.reload();
@@ -39,39 +41,62 @@ function toggleDevTools(menuItem, activeWindow) {
   activeWindow && activeWindow.toggleDevTools();
 }
 
-function clearSessionDataAndQuit() {
-  session.defaultSession.clearStorageData(()=>{
-    app.quit();
+function updateAccountData() {
+  return accountManager.getAccounts().then((data) => {
+    var updated = !_.isEqual(accounts, data);
+
+    console.log('Authenticated accounts retrieved:', data);
+    accounts = data;
+    updated && app.emit('account-data-update', accounts);
   });
 }
 
+function activateMainWindow() {
+  mainWindow.show();
+  mainWindow.focus();
+}
+
+function addAccount() {
+  new LoginWindow().on('account-added', updateAccountData);
+}
+
 function init() {
+  electron.Menu.setApplicationMenu(menuBuilder.menu);
+
+  accounts = [];
   mainWindow = new ChatWindow();
 
-  accountManager.getAccounts().then((data) => {
-    console.log('Authenticated accounts:', data);
+  updateAccountData().then(() => {
+    if (accounts.length > 0) { return; }
 
-    accounts = data;
-  }).then(() => {
-    if (accounts.length === 0) {
-      new LoginWindow();
-    }
+    addAccount();
   }).catch((error) => {
     console.log('Unable to retrieve account data.', error);
     app.quit();
   });
 }
 
+function appReset() {
+  session.defaultSession.clearStorageData(()=>{
+    mainWindow && mainWindow.makeCloseable();
+
+    windowManager.closeAll();
+
+    init();
+  });
+}
+
+menuBuilder.on('add-account', addAccount);
 menuBuilder.on('quit', app.quit);
 menuBuilder.on('reload', reloadWindow);
 menuBuilder.on('fullscreen', fullScreenWindow);
 menuBuilder.on('devtools', toggleDevTools);
 menuBuilder.on('cycle-windows', () => { windowManager.activateNextWindow(); });
-menuBuilder.on('logout', clearSessionDataAndQuit);
+menuBuilder.on('logout', appReset);
 
 app.on('before-quit', () => { mainWindow.makeCloseable(); });
-app.on('ready', () => { electron.Menu.setApplicationMenu(menuBuilder.menu); });
 app.on('ready', init);
+app.on('account-data-update', activateMainWindow);
 app.on('window-all-closed', () => {}); // Prevent the default (app closes)
 
 app.on('browser-window-created', (e, win) => { windowManager.addWindow(win); });
