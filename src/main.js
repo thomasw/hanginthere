@@ -6,6 +6,7 @@ const session = electron.session;
 
 const AccountManager = require('./auth/accounts');
 const LoginWindow = require('./auth/login-window');
+const ChatWindow = require('./chat/window');
 const WindowManager = require('./window-manager');
 const DockNotifier = require('./dock-notifier');
 
@@ -13,6 +14,7 @@ const MenuBuilder = require('./menus');
 const bindWindowEvents = require('./window-events');
 
 
+let mainWindow;
 let accountManager = new AccountManager();
 let windowManager = new WindowManager();
 let dockNotifier = new DockNotifier({
@@ -44,6 +46,8 @@ function clearSessionDataAndQuit() {
 }
 
 function init() {
+  mainWindow = new ChatWindow();
+
   accountManager.getAccounts().then((data) => {
     console.log('Authenticated accounts:', data);
 
@@ -66,6 +70,7 @@ menuBuilder.on('next_window-clicked',
   windowManager.activateNextWindow.bind(windowManager));
 menuBuilder.on('log_out-clicked', clearSessionDataAndQuit);
 
+app.on('before-quit', () => { mainWindow.makeCloseable(); });
 app.on('ready', () => { electron.Menu.setApplicationMenu(menuBuilder.menu); });
 app.on('ready', init);
 app.on('window-all-closed', () => {}); // Prevent the default (app closes)

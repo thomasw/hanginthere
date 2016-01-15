@@ -22,16 +22,23 @@ class ChatWindow extends BrowserWindow {
 
     super(_.assign({}, defaults, settings));
 
+    this.closeable = false;
+
     this.loadURL('file://' + path.join(__dirname, 'main.html'));
 
     this.on('close', this.handleClose.bind(this));
   }
 
   handleClose(e) {
+    if (this.closeable) { return; }
+
     console.log('Close request for chat window. Hiding instead.');
     e.preventDefault();
-
     this.hide();
+  }
+
+  makeCloseable() {
+    this.closeable = true;
   }
 }
 
