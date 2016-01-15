@@ -62,13 +62,12 @@ function init() {
   });
 }
 
-menuBuilder.on('quit-clicked', app.quit);
-menuBuilder.on('reload-clicked', reloadWindow);
-menuBuilder.on('full_screen-clicked', fullScreenWindow);
-menuBuilder.on('dev_tools-clicked', toggleDevTools);
-menuBuilder.on('next_window-clicked',
-  windowManager.activateNextWindow.bind(windowManager));
-menuBuilder.on('log_out-clicked', clearSessionDataAndQuit);
+menuBuilder.on('quit', app.quit);
+menuBuilder.on('reload', reloadWindow);
+menuBuilder.on('fullscreen', fullScreenWindow);
+menuBuilder.on('devtools', toggleDevTools);
+menuBuilder.on('cycle-windows', () => { windowManager.activateNextWindow(); });
+menuBuilder.on('logout', clearSessionDataAndQuit);
 
 app.on('before-quit', () => { mainWindow.makeCloseable(); });
 app.on('ready', () => { electron.Menu.setApplicationMenu(menuBuilder.menu); });
@@ -80,5 +79,4 @@ app.on('browser-window-created', (e, win) => { bindWindowEvents(win); });
 
 app.on('browser-window-focus', dockNotifier.resetDock.bind(dockNotifier));
 app.on('activate', dockNotifier.resetDock.bind(dockNotifier));
-
 ipcMain.on('message-received', dockNotifier.messageReceived.bind(dockNotifier));

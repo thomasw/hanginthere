@@ -79,12 +79,12 @@ class MenuBuilder {
         {
           label: 'Toggle Full Screen',
           accelerator: this.isDarwin ? 'Ctrl+Command+F' : 'F11',
-          id: 'full_screen'
+          id: 'fullscreen'
         },
         {
           label: 'Toggle Developer Tools',
           accelerator: this.isDarwin ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-          id: 'dev_tools'
+          id: 'devtools'
         }
       ]
     };
@@ -114,7 +114,7 @@ class MenuBuilder {
       submenu: [
         {
           label: 'Log out',
-          id: 'log_out'
+          id: 'logout'
         },
         {
           label: 'About ' + this.appName,
@@ -154,9 +154,9 @@ class MenuBuilder {
         type: 'separator'
       },
       {
-        label: 'Next window',
+        label: 'Cycle through windows',
         accelerator: 'Cmd+`',
-        id: 'next_window'
+        id: 'cycle-windows'
       },
       {
         label: 'Bring All to Front',
@@ -193,11 +193,9 @@ class MenuBuilder {
 
   menuItemClicked(menuItem, activeWindow) {
     console.log('"' + menuItem.label + '" menu item invoked.');
-    this.emit('menu-item-clicked', menuItem, activeWindow);
 
-    if (menuItem.id) {
-      this.emit(menuItem.id + '-clicked', menuItem, activeWindow);
-    }
+    this.emit('menu-item-invoked', menuItem, activeWindow);
+    menuItem.id && this.emit(menuItem.id, menuItem, activeWindow);
   }
 }
 
