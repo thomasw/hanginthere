@@ -4,7 +4,14 @@ const app = electron.app;
 const ipcMain = electron.ipcMain;
 const session = electron.session;
 
-const _ = require('lodash');
+const createStore = require('redux').createStore;
+const actions = require('./actions');
+const appReducer = require('./reducers').appReducer;
+
+const store = createStore(appReducer);
+const stateLogger = () => {
+  console.log('State update:', store.getState());
+};
 
 const AccountManager = require('./auth/accounts');
 const LoginWindow = require('./auth/login-window');
@@ -14,7 +21,6 @@ const DockNotifier = require('./dock-notifier');
 
 const MenuBuilder = require('./menus');
 const bindWindowEvents = require('./window-events');
-
 
 let mainWindow;
 let accountManager = new AccountManager();
@@ -27,7 +33,9 @@ let menuBuilder = new MenuBuilder({
   appName: app.getName(),
   Menu: electron.Menu
 });
-let accounts;
+
+
+stateLogger();
 
 function reloadWindow(menuItem, activeWindow) {
   activeWindow && activeWindow.reload();
@@ -42,13 +50,9 @@ function toggleDevTools(menuItem, activeWindow) {
 }
 
 function updateAccountData() {
-  return accountManager.getAccounts().then((data) => {
-    var updated = !_.isEqual(accounts, data);
-
-    console.log('Authenticated accounts retrieved:', data);
-    accounts = data;
-    updated && app.emit('account-data-update', accounts);
-  });
+  return accountManager.getAccounts()
+    .then(actions.updateAccounts)
+    .then(store.dispatch);
 }
 
 function activateMainWindow() {
@@ -63,14 +67,9 @@ function addAccount() {
 function init() {
   electron.Menu.setApplicationMenu(menuBuilder.menu);
 
-  accounts = [];
   mainWindow = new ChatWindow();
 
-  updateAccountData().then(() => {
-    if (accounts.length > 0) { return; }
-
-    addAccount();
-  }).catch((error) => {
+  updateAccountData().catch((error) => {
     console.log('Unable to retrieve account data.', error);
     app.quit();
   });
@@ -78,8 +77,9 @@ function init() {
 
 function appReset() {
   session.defaultSession.clearStorageData(()=>{
-    mainWindow && mainWindow.makeCloseable();
+    store.dispatch(actions.reset());
 
+    mainWindow && mainWindow.makeCloseable();
     windowManager.closeAll();
 
     init();
@@ -98,6 +98,18 @@ app.on('before-quit', () => { mainWindow.makeCloseable(); });
 app.on('ready', init);
 app.on('account-data-update', activateMainWindow);
 app.on('window-all-closed', () => {}); // Prevent the default (app closes)
+
+store.subscribe(stateLogger);
+store.subscribe(() => {
+    if (store.getState().accounts.length === 0) {
+      addAccount();
+      return;
+    }
+
+    if (!mainWindow.isVisible()) {
+      activateMainWindow();
+    }
+});
 
 app.on('browser-window-created', (e, win) => { windowManager.addWindow(win); });
 app.on('browser-window-created', (e, win) => { bindWindowEvents(win); });
