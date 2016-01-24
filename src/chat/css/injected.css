@@ -1,0 +1,15 @@
+/* Hide notification menu and app drawer in upper right */
+
+.gb_9a {
+  display: none !important;
+}
+
+/* Reposition logo and hamburger to accomodate window controls */
+
+.g-Ue-kc-Sc1lPb, .g-Ue-OkO9ve  {
+  -webkit-app-region: drag;
+}
+
+iframe {
+  -webkit-app-region: no-drag;
+}

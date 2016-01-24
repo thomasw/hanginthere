@@ -10,11 +10,19 @@
     <h1>HangInThere</h1>
     <p>Loading...</p>
   </section>
+
   <nav id="account-selector"></nav>
+
+  <section id="chat-windows"></section>
+
   <script type="text/javascript">
     const electron = require('electron');
     const ipcRenderer = electron.ipcRenderer;
+    const fs = require('fs');
+    const chat_dir = __dirname;
   </script>
+
   <script type="text/javascript" src="dist/build.js"></script>
+
 </body>
 </html>

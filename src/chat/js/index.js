@@ -3,6 +3,7 @@ import { render } from 'react-dom'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import AccountSelector from './containers/AccountSelector'
+import ChatWindows from './containers/ChatWindows'
 import chatAppReducer from './reducers'
 import { updateAccounts } from './actions'
 
@@ -10,6 +11,7 @@ import { updateAccounts } from './actions'
 
 let store = createStore(chatAppReducer)
 let selectorContainer = document.getElementById('account-selector')
+let chatContainer = document.getElementById('chat-windows')
 
 const stateLogger = () => {
   console.log('State update:', store.getState())
@@ -24,5 +26,7 @@ ipcRenderer.on('accounts-update', (e, accounts) => {
 
 render(
   <Provider store={store}><AccountSelector /></Provider>, selectorContainer)
+render(
+  <Provider store={store}><ChatWindows /></Provider>, chatContainer)
 
 ipcRenderer.send('request-accounts')
