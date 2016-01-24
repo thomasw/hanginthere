@@ -101,7 +101,9 @@ app.on('window-all-closed', () => {}); // Prevent the default (app closes)
 
 store.subscribe(stateLogger);
 store.subscribe(() => {
-    if (store.getState().accounts.length === 0) {
+    let accounts = store.getState().accounts;
+
+    if (accounts.length === 0) {
       addAccount();
       return;
     }
@@ -109,6 +111,8 @@ store.subscribe(() => {
     if (!mainWindow.isVisible()) {
       activateMainWindow();
     }
+
+    mainWindow.webContents.send('accounts-update', accounts);
 });
 
 app.on('browser-window-created', (e, win) => { windowManager.addWindow(win); });
@@ -116,4 +120,9 @@ app.on('browser-window-created', (e, win) => { bindWindowEvents(win); });
 
 app.on('browser-window-focus', dockNotifier.resetDock.bind(dockNotifier));
 app.on('activate', dockNotifier.resetDock.bind(dockNotifier));
+
 ipcMain.on('message-received', dockNotifier.messageReceived.bind(dockNotifier));
+ipcMain.on('add-account', addAccount);
+ipcMain.on('request-accounts', (e) => {
+  e.sender.send('accounts-update', store.getState().accounts);
+});

@@ -8,8 +8,8 @@ function accounts(state, action) {
 
   switch (action.type) {
     case actions.UPDATE_ACCOUNTS:
-      if (accounts.length < state.length) {
-        return accounts;
+      if (action.accounts.length < state.length) {
+        return action.accounts;
       }
 
       // Google always adds new accounts to the bottm, so we can get always
