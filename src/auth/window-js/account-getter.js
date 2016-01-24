@@ -35,7 +35,7 @@ function getAccountData() {
       name: nameEl.innerText,
       email: emailEl.innerText,
       id: accountID,
-      icon: iconURL
+      icon: 'https:' + iconURL
     });
   });
 
