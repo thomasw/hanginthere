@@ -4,7 +4,7 @@ import AddAccount from './AddAccount'
 
 export default class AccountList extends Component {
   render () {
-    var accountNodes = this.props.accounts.map((account, index) => {
+    var accountNodes = this.props.accounts.map((account) => {
       return (
         <Account email={account.email}
             icon={account.icon}
