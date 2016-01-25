@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
-import { UPDATE_ACCOUNTS } from './actions'
+import { UPDATE_ACCOUNTS, ACTIVATE_ACCOUNT, SET_LOADING } from './actions'
 
-function accounts (state = [], action) {
+function accounts(state = [], action) {
   switch (action.type) {
     case UPDATE_ACCOUNTS:
       if (action.accounts.length < state.length) {
@@ -16,6 +16,18 @@ function accounts (state = [], action) {
   }
 }
 
+function selectedAccount(state = null, action) {
+  switch(action.type) {
+    case ACTIVATE_ACCOUNT:
+      return action.account
+    case SET_LOADING:
+      return null
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
-  'accounts': accounts
+  'accounts': accounts,
+  'selectedAccount': selectedAccount
 })

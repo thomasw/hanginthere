@@ -1,22 +1,24 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import ChatList from '../components/ChatList'
-import Chat from '../components/Chat'
 
 class ChatWindows extends Component {
   render () {
-    const { accounts } = this.props
-    return (<ChatList accounts={accounts} />)
+    const { accounts, selectedAccount } = this.props
+    return (
+      <ChatList accounts={accounts}
+          selectedAccount={selectedAccount}
+      />)
   }
 }
 
 ChatWindows.propTypes = {
-  accounts: PropTypes.arrayOf(PropTypes.shape(Chat.propTypes).isRequired)
-              .isRequired
+  accounts: ChatList.propTypes.accounts,
+  selectedAccount: PropTypes.string
 }
 
-function selectAccounts (state) {
-  return { accounts: state.accounts }
+function getState (state) {
+  return state
 }
 
-export default connect(selectAccounts)(ChatWindows)
+export default connect(getState)(ChatWindows)

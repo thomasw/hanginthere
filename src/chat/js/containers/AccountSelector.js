@@ -1,22 +1,33 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import AccountList from '../components/AccountList'
-import Account from '../components/Account'
+import { activateAccount } from '../actions'
 
 class AccountSelector extends Component {
   render () {
-    const { accounts } = this.props
-    return (<AccountList accounts={accounts} />)
+    const { accounts, selectedAccount, dispatch } = this.props
+
+    var handleAccountSelect = (id) => {
+      dispatch(activateAccount({id}))
+    }
+
+    return (
+      <AccountList accounts={accounts}
+          onAccountSelect={handleAccountSelect}
+          selectedAccount={selectedAccount}
+      />
+    )
   }
 }
 
 AccountSelector.propTypes = {
-  accounts: PropTypes.arrayOf(PropTypes.shape(Account.propTypes).isRequired)
-              .isRequired
+  accounts: AccountList.propTypes.accounts,
+  dispatch: PropTypes.func.isRequired,
+  selectedAccount: PropTypes.string
 }
 
 function selectAccounts (state) {
-  return { accounts: state.accounts }
+  return state
 }
 
 export default connect(selectAccounts)(AccountSelector)

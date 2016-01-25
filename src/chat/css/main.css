@@ -10,6 +10,36 @@ body {
   padding: 0;
 }
 
-#chat-windows, #chat-windows div {
+#account-selector {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#chat-windows, #chat-windows ul {
   height: 100%;
+}
+
+#chat-windows li {
+  visibility: hidden;
+  height: 0;
+  width: 0;
+}
+
+#chat-windows .selected {
+  display: block;
+  visibility: visible;
+  height: 100%;
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+ul, li {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
 }

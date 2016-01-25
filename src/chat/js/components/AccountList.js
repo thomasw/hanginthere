@@ -5,18 +5,23 @@ import AddAccount from './AddAccount'
 export default class AccountList extends Component {
   render () {
     var accountNodes = this.props.accounts.map((account) => {
+      const accountSelected = this.props.selectedAccount === account.id
       return (
-        <Account email={account.email}
-            icon={account.icon}
-            id={account.id}
+        <li className={(accountSelected) ? 'selected': ''}
             key={account.id}
-            name={account.name}
-        />)
+        >
+          <Account email={account.email}
+              icon={account.icon}
+              id={account.id}
+              name={account.name}
+              onAccountSelect={this.props.onAccountSelect}
+          />
+        </li>)
     })
 
     return (
       <ul>
-      {accountNodes}
+        {accountNodes}
         <li><AddAccount /></li>
       </ul>
     )
@@ -24,6 +29,12 @@ export default class AccountList extends Component {
 }
 
 AccountList.propTypes = {
-  accounts: PropTypes.arrayOf(PropTypes.shape(Account.propTypes).isRequired)
-              .isRequired
+  accounts: PropTypes.arrayOf(PropTypes.shape({
+    email: PropTypes.string.isRequired,
+    icon: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
+  }).isRequired).isRequired,
+  onAccountSelect: PropTypes.func.isRequired,
+  selectedAccount: PropTypes.string
 }
