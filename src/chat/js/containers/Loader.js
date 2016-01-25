@@ -8,8 +8,8 @@ class Loader extends Component {
       <section className={(selectedAccount === null) ? 'visible': 'hidden'}
           id="loader"
       >
-        <h1>{'HangInThere'}</h1>
-        <p>{'Loading...'}</p>
+        <img src="../img/icon.png" />
+        <p>{'Connecting...'}</p>
       </section>)
   }
 }
