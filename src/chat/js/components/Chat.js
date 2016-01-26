@@ -8,14 +8,14 @@ export default class Chat extends Component {
 
   componentDidMount() {
     let webview = ReactDOM.findDOMNode(this);
-    webview.addEventListener('dom-ready', this.handleDomReady);
+    webview.addEventListener('did-get-response-details', this.injectCss);
   }
 
   componentWillUnmount() {
-    this.removeEventListener('dom-ready', this.handleDomReady);
+    this.removeEventListener('did-get-response-details', this.injectCss);
   }
 
-  handleDomReady(e) {
+  injectCss(e) {
     let cssPath = path.join(chat_dir, 'css/injected.css')
     fs.readFile(cssPath, 'utf8', (err, data) => {
       e.srcElement.insertCSS(data)
