@@ -6,6 +6,16 @@
 
 /* Reposition logo and hamburger to accomodate window controls */
 
+/* Hamburger */
+.mUbCce.fKz7Od.cTIldc.rxXpLd.M9Bg4d, .mUbCce.fKz7Od.cTIldc.rxXpLd {
+  margin-top: 30px;
+}
+
+/* Google logo */
+#gbq1 {
+  margin-left: 15px !important;
+}
+
 .g-Ue-kc-Sc1lPb, .g-Ue-OkO9ve  {
   -webkit-app-region: drag;
 }

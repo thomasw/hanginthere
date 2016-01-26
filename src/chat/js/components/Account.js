@@ -5,7 +5,7 @@ export default class Account extends Component {
     let handleClick = () => {
       this.props.onAccountSelect(this.props.id)
     }
-    
+
     return (
       <button href='#account-{this.props.id}'
           onClick={handleClick}
@@ -13,6 +13,9 @@ export default class Account extends Component {
         <img src={this.props.icon} />
         <div className={'account-name'}>
           {this.props.name}{' - '}{this.props.email}
+        </div>
+        <div className={'shortcut'}>
+          {'⌘'+this.props.id}
         </div>
       </button>
     )

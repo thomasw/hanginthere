@@ -4,11 +4,16 @@ import React, { Component } from 'react'
 
 export default class AddAccount extends Component {
 
-  handleClick (e) {
+  handleClick () {
     ipcRenderer.send('add-account')
   }
 
   render () {
-    return (<button onClick={this.handleClick}>{'Add account'}</button>)
+    return (
+      <button className={'add-account'}
+          onClick={this.handleClick}
+      >
+        <span>{'+'}</span>
+      </button>)
   }
 }

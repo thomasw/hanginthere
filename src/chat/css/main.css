@@ -3,35 +3,106 @@ html {
 }
 
 body {
-  background: #fff;
+  background: #000;
   margin: 0;
   padding: 0;
 }
 
 #account-selector {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 10px;
+  right: 10px;
+}
+
+#account-selector ul {
+  display: flex;
+}
+
+#account-selector li{
+  padding-top: 3px;
+}
+
+#account-selector button {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: #bbb;
+  font-size: 10px;
+}
+
+
+
+#account-selector button:hover img {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+
+@keyframes account-pulse {
+    0% { transform: scale(1); background: rgba(15, 144, 68, 0); }
+    50% { transform: scale(1.3); background: rgba(15, 144, 68, 0.9); }
+    100% { transform: scale(1); background: rgba(15, 144, 68, 0.4); }
+}
+
+#account-selector .selected img {
+  background: rgba(15, 144, 68, 0.4);
+  animation-name: account-pulse;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+}
+
+#account-selector .account-name {
+  display: none;
+}
+
+#account-selector img {
+  border-radius: 8px;
+  padding: 5px;
+  width: 40px;
+  height: 40px;
+}
+
+
+#account-selector .add-account span {
+    margin: 5px;
+    padding: 0;
+    border-radius: 8px;
+    display: block;
+    width: 40px;
+    height: 40px;
+    background: rgba(38, 28, 38, 1);
+    font-size: 24px;
+    line-height: 40px;
+    vertical-align: middle;
+}
+#account-selector .add-account:hover span {
+  margin: 0;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  background-clip: padding-box;
 }
 
 #chat-windows, #chat-windows ul {
 }
 
 #chat-windows li {
-  visibility: hidden;
-  height: 0;
-  width: 0;
-}
-
-#chat-windows .selected {
-  visibility: visible;
   height: 100%;
   width: 100%;
   position: fixed;
-  left: 0;
   top: 0;
-  background: #000;
+  left: 100%;
   z-index: -1;
+  -webkit-transition: left 0.5s;
+}
+
+@keyframes slideIn {
+    0% { left: -100%; }
+    100% { left: 0; }
+}
+
+#chat-windows .selected {
+  left: 0;
+  animation-name: slideIn;
+  animation-duration: 0.5s;
 }
 
 .hidden {
@@ -59,7 +130,7 @@ ul, li {
 }
 
 #loader {
-  margin: 20vh 0 0 0;
+  padding: 20vh 0 0 0;
   height: 100%;
   width: 100%;
   position: fixed;
@@ -67,6 +138,7 @@ ul, li {
   top: 0;
   z-index: -1;
   vertical-align: middle;
+  background: #fff;
 }
 
 #loader p {
