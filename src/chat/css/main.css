@@ -39,13 +39,13 @@ body {
 
 
 @keyframes account-pulse {
-    0% { transform: scale(1); background: rgba(15, 144, 68, 0); }
-    50% { transform: scale(1.3); background: rgba(15, 144, 68, 0.9); }
-    100% { transform: scale(1); background: rgba(15, 144, 68, 0.4); }
+    0% { transform: scale(1); background: rgba(255, 255, 255, 0); }
+    50% { transform: scale(1.3); background: rgba(255, 255, 255, 0.8); }
+    100% { transform: scale(1); background: rgba(255, 255, 255, 0.3); }
 }
 
 #account-selector .selected img {
-  background: rgba(15, 144, 68, 0.4);
+  background: rgba(255, 255, 255, 0.3);
   animation-name: account-pulse;
   animation-duration: 1s;
   animation-iteration-count: 1;
@@ -56,7 +56,7 @@ body {
 }
 
 #account-selector img {
-  border-radius: 8px;
+  border-radius: 30px;
   padding: 5px;
   width: 40px;
   height: 40px;
@@ -66,7 +66,7 @@ body {
 #account-selector .add-account span {
     margin: 5px;
     padding: 0;
-    border-radius: 8px;
+    border-radius: 30px;
     display: block;
     width: 40px;
     height: 40px;
