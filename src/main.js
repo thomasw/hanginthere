@@ -31,11 +31,17 @@ let dockNotifier = new DockNotifier({
 });
 let menuBuilder = new MenuBuilder({
   appName: app.getName(),
-  Menu: electron.Menu
+  Menu: electron.Menu,
+  MenuItem: electron.MenuItem
 });
 
 
 stateLogger();
+
+function notifyMainOnAccountSelection(account) {
+  mainWindow.show();
+  mainWindow.webContents.send('account-selection', account);
+}
 
 function reloadWindow(menuItem, activeWindow) {
   activeWindow && activeWindow.reload();
@@ -65,7 +71,7 @@ function addAccount() {
 }
 
 function init() {
-  electron.Menu.setApplicationMenu(menuBuilder.menu);
+  electron.Menu.setApplicationMenu(menuBuilder.getMenu());
 
   mainWindow = new ChatWindow();
 
@@ -93,6 +99,15 @@ menuBuilder.on('fullscreen', fullScreenWindow);
 menuBuilder.on('devtools', toggleDevTools);
 menuBuilder.on('cycle-windows', () => { windowManager.activateNextWindow(); });
 menuBuilder.on('logout', appReset);
+menuBuilder.on('account-selected', notifyMainOnAccountSelection);
+menuBuilder.on('next-account', () => {
+  mainWindow.show();
+  mainWindow.webContents.send('next-account');
+});
+menuBuilder.on('previous-account', () => {
+    mainWindow.show();
+    mainWindow.webContents.send('previous-account');
+});
 
 app.on('before-quit', () => { mainWindow.makeCloseable(); });
 app.on('ready', init);
@@ -111,6 +126,8 @@ store.subscribe(() => {
     if (!mainWindow.isVisible()) {
       activateMainWindow();
     }
+
+    electron.Menu.setApplicationMenu(menuBuilder.getMenuWithAccounts(accounts));
 
     mainWindow.webContents.send('accounts-update', accounts);
 });

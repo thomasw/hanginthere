@@ -9,6 +9,7 @@ class MenuBuilder {
   constructor(settings) {
     this.appName = settings.appName;
     this.Menu = settings.Menu;
+    this.MenuItem = settings.MenuItem;
     this.isDarwin = process.platform === 'darwin';
 
     this.fileMenu = {
@@ -175,7 +176,10 @@ class MenuBuilder {
     );
 
     this.template = this.getTemplate();
-    this.menu = this.Menu.buildFromTemplate(this.template);
+  }
+
+  getMenu() {
+    return this.Menu.buildFromTemplate(this.template);
   }
 
   getTemplate() {
@@ -201,11 +205,65 @@ class MenuBuilder {
     }
   }
 
-  menuItemClicked(menuItem, activeWindow) {
-    console.log('"' + menuItem.label + '" menu item invoked.');
+  logMenuInvocation(menuItem) {
+    console.log(
+      `"${menuItem.label}" (${menuItem.id || 'no id'}) menu item invoked.`
+    );
+  }
 
+  menuItemClicked(menuItem, activeWindow) {
+    this.logMenuInvocation(menuItem);
     this.emit('menu-item-invoked', menuItem, activeWindow);
     menuItem.id && this.emit(menuItem.id, menuItem, activeWindow);
+  }
+
+  accountSelection(menuItem, activeWindow) {
+    this.logMenuInvocation(menuItem);
+    this.emit('menu-item-invoked', menuItem, activeWindow);
+    this.emit('account-selected', menuItem.account);
+  }
+
+  createAccountMenuItem(account) {
+    let menuItem = new this.MenuItem({
+      label: `${account.name} (${account.email})`,
+      accelerator: account.accelerator,
+      click: this.accountSelection.bind(this)
+    });
+
+    menuItem.account = account;
+
+    return menuItem;
+  }
+
+  getMenuWithAccounts(accounts) {
+    let menu = this.Menu.buildFromTemplate(this.template);
+    let menuItems = accounts.map(this.createAccountMenuItem, this);
+    let topSeperator = new this.MenuItem({type: 'separator'});
+    let bottomSeperator = new this.MenuItem({type: 'separator'});
+    let prevAccountMI = new this.MenuItem({
+      label: 'Previous account',
+      accelerator: 'Shift+CmdOrCtrl+[',
+      click: this.menuItemClicked.bind(this)
+    });
+    let nextAccountMI = new this.MenuItem({
+      label: 'Next account',
+      accelerator: 'Shift+CmdOrCtrl+]',
+      click: this.menuItemClicked.bind(this)
+    });
+
+    nextAccountMI.id = 'next-account';
+    prevAccountMI.id = 'previous-account';
+
+    if (menuItems.length === 0) {
+      return menu;
+    }
+
+    menuItems.unshift(topSeperator);
+    menuItems.push(bottomSeperator, prevAccountMI, nextAccountMI);
+
+    menuItems.forEach(menuItem => { menu.items[3].submenu.append(menuItem); });
+
+    return menu;
   }
 }
 
