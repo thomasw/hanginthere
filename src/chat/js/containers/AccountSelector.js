@@ -23,7 +23,7 @@ class AccountSelector extends Component {
 AccountSelector.propTypes = {
   accounts: AccountList.propTypes.accounts,
   dispatch: PropTypes.func.isRequired,
-  selectedAccount: PropTypes.string
+  selectedAccount: PropTypes.number
 }
 
 function selectAccounts (state) {

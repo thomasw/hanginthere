@@ -24,5 +24,5 @@ export default class ChatList extends Component {
 ChatList.propTypes = {
   accounts: PropTypes.arrayOf(
     PropTypes.shape(Chat.PropTypes).isRequired).isRequired,
-  selectedAccount: PropTypes.string
+  selectedAccount: PropTypes.number
 }

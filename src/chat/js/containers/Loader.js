@@ -15,7 +15,7 @@ class Loader extends Component {
 }
 
 Loader.propTypes = {
-  selectedAccount: PropTypes.string
+  selectedAccount: PropTypes.number
 }
 
 function getSelectedAccount(state) {

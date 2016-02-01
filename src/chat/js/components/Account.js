@@ -14,9 +14,7 @@ export default class Account extends Component {
         <div className={'account-name'}>
           {this.props.name}{' - '}{this.props.email}
         </div>
-        <div className={'shortcut'}>
-          {'⌘'+this.props.id}
-        </div>
+        <div className={'shortcut'}>{this.props.humanizedAccelerator}</div>
       </button>
     )
   }
@@ -24,8 +22,9 @@ export default class Account extends Component {
 
 Account.propTypes = {
   email: PropTypes.string.isRequired,
+  humanizedAccelerator: PropTypes.string,
   icon: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   onAccountSelect: PropTypes.func.isRequired
 }

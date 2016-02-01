@@ -14,7 +14,7 @@ class ChatWindows extends Component {
 
 ChatWindows.propTypes = {
   accounts: ChatList.propTypes.accounts,
-  selectedAccount: PropTypes.string
+  selectedAccount: PropTypes.number
 }
 
 function getState (state) {

@@ -35,5 +35,5 @@ export default class Chat extends Component {
 }
 
 Chat.propTypes = {
-  id: PropTypes.string.isRequired
+  id: PropTypes.number.isRequired
 }

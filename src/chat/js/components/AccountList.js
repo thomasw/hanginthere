@@ -11,6 +11,7 @@ export default class AccountList extends Component {
             key={account.id}
         >
           <Account email={account.email}
+              humanizedAccelerator={account.humanizedAccelerator}
               icon={account.icon}
               id={account.id}
               name={account.name}
@@ -31,10 +32,11 @@ export default class AccountList extends Component {
 AccountList.propTypes = {
   accounts: PropTypes.arrayOf(PropTypes.shape({
     email: PropTypes.string.isRequired,
+    humanizedAccelerator: PropTypes.string,
     icon: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired
   }).isRequired).isRequired,
   onAccountSelect: PropTypes.func.isRequired,
-  selectedAccount: PropTypes.string
+  selectedAccount: PropTypes.number
 }
