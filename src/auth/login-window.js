@@ -43,10 +43,7 @@ class LoginWindow extends BrowserWindow {
     this.loginSuccess();
   }
 
-  _LoginRedirectCheck(
-      e, oldURL, newURL, mainFrame,httpResponseCode, requestMethod, referrer,
-      headers)
-  {
+  _LoginRedirectCheck(e, oldURL, newURL, mainFrame) {
     console.log(`LoginWindow redirecting from ${oldURL} to ${newURL}.`);
 
     if(!mainFrame || !newURL.startsWith(this.success_url)) { return; }
