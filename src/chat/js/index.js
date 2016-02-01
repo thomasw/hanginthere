@@ -32,6 +32,33 @@ ipcRenderer.on('accounts-update', (e, accounts) => {
   newFirstAccount && store.dispatch(activateAccount(newFirstAccount))
 })
 
+ipcRenderer.on('account-selection', (e, account) => {
+  store.dispatch(activateAccount(account));
+});
+
+ipcRenderer.on('previous-account', () => {
+  let state = store.getState();
+  let nextAccount = state.accounts.slice(state.selectedAccount - 1)[0];
+
+  if (state.selectedAccount === null || state.accounts.length === 0) {
+    return;
+  }
+
+  store.dispatch(activateAccount(nextAccount));
+});
+
+ipcRenderer.on('next-account', () => {
+  let state = store.getState();
+  let nextAccountIndex = (state.selectedAccount + 1) % state.accounts.length
+  let nextAccount = state.accounts[nextAccountIndex];
+
+  if (state.selectedAccount === null || state.accounts.length === 0) {
+    return;
+  }
+
+  store.dispatch(activateAccount(nextAccount));
+});
+
 render(
   <Provider store={store}><Loader /></Provider>, loaderContainer)
 render(
