@@ -9,6 +9,11 @@ export default class Chat extends Component {
   componentDidMount() {
     let webview = ReactDOM.findDOMNode(this);
     webview.addEventListener('did-get-response-details', this.injectCss);
+    webview.send('hello');
+    webview.addEventListener('ipc-message', (e) => {
+      console.log(e.srcElement.id, e.args[0]);
+    });
+    webview.addEventListener('console-message', this.logMessage);
   }
 
   componentWillUnmount() {
@@ -20,6 +25,11 @@ export default class Chat extends Component {
     fs.readFile(cssPath, 'utf8', (err, data) => {
       e.srcElement.insertCSS(data)
     })
+  }
+
+  logMessage(e) {
+    console.log(
+      `Chat WebView (${e.srcElement.id}):`, e.level, e.message);
   }
 
   render () {

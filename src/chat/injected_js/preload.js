@@ -35,24 +35,6 @@ function monitorContactList() {
   contactListMonitor.observe(contactList);
 }
 
-function notifyUser(message) {
-  console.log('Message received. Notifying user.', message);
-
-  var notification = new Notification(message.name, {
-      body: message.text,
-      icon: message.iconURL
-  });
-
-  notification.addEventListener('click', function() {
-    console.log('Notification clicked.');
-    remote.getCurrentWindow().show();
-    message.node.querySelector('button').click();
-  });
-
-  // Message main process for dock manipulation
-  ipcRenderer.send('message-received', message);
-}
-
 function disableLogoClicks() {
   document.querySelector('#gbq1 a').addEventListener('click', function(e) {
     e.preventDefault();
@@ -61,7 +43,9 @@ function disableLogoClicks() {
 }
 
 webFrame.setSpellCheckProvider(locale, true, SpellCheckProvider);
-contactListMonitor.on('message-received', notifyUser);
+contactListMonitor.on('contact-list-update', (contacts) => {
+  ipcRenderer.sendToHost('contact-list-update', contacts);
+});
 
 document.addEventListener('DOMContentLoaded', monitorContactList);
 document.addEventListener('DOMContentLoaded', disableLogoClicks);

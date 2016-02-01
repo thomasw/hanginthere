@@ -2,8 +2,9 @@
 
 const EventEmitter = require('events');
 const util = require('util');
+const _ = require('lodash');
 
-class Message {
+class Contact {
   constructor(config) {
     this.node = config.node;
 
@@ -12,32 +13,14 @@ class Message {
     this.text = this._getText();
     this.isMarkedNew = this._isMarkedNew();
     this.age = this._getAge();
-    this.userNotified = this._userNotified();
-  }
+    this.id = this.node.id;
+    this.unreadCount = this._getUnreadCount();
 
-  markNotified() {
-    /*
-    To indicate we've fired a notification for a message, we inject a dom
-    element to flag it in a ocation we know will be entirely wiped out whenever
-    the hangouts window gets a new message. I initially attempted to use data
-    attributes for this on the text container, but this element isn't
-    removed/readded when new messages are received. The read state would
-    persists using that approach.
-    */
-    var readMarker = document.createElement('span');
-    readMarker.classList.add('hit_marked_notified');
-
-    this._getTextNode().appendChild(readMarker);
-
-    this.userNotified = true;
+    delete this.node;
   }
 
   _querySelector(query) {
     return this.node.querySelector(query);
-  }
-
-  _userNotified() {
-    return this._querySelector('.hit_marked_notified') !== null;
   }
 
   _getName() {
@@ -63,6 +46,19 @@ class Message {
   _getAge() {
     return this._querySelector('.sV').innerText;
   }
+
+  _getUnreadCount() {
+    if (!this._isMarkedNew()) { return 0; }
+
+    let label = this._querySelector('.lt.mG.mG').getAttribute('aria-label');
+    let match = label.match(/(\d+) unread messages/i);
+
+    if (!match && this._isMarkedNew()) {
+      return 1;
+    }
+
+    return parseInt(match[1]);
+  }
 }
 
 
@@ -79,9 +75,9 @@ class ContactListMonitor {
 
     this.contactList = target;
 
-    this._getTopMessage().markNotified();
-
     this.observer.observe(target, {childList: true});
+
+    this.emit('contact-list-update', this.getContactList());
   }
 
   stop() {
@@ -90,26 +86,27 @@ class ContactListMonitor {
     console.log('Contact List monitoring ended.');
   }
 
-  _parseMutations(mutations) {
-    var message = this._getTopMessage();
-
-    if (message.userNotified || !message.isMarkedNew ) {
-      return;
-    }
-
-    message.markNotified();
-
-    this.emit('message-received', message);
+  _parseMutations() {
+    this.emit('contact-list-update', this.getContactList());
   }
 
-  _getTopMessage() {
-    var newTopNode = this.contactList.firstChild;
+  getContactList() {
+    return _.map(this.contactList.children, node => {
+      let contact;
 
-    if (!newTopNode || newTopNode.className !== 'c-P yd PH') {
-      return null;
-    }
+      if(_.includes(this.badNodes, node.id)) {
+        return;
+      }
 
-    return new Message({node: newTopNode});
+      try {
+        contact = new Contact({node: node});
+      } catch (e) {
+        console.error(e);
+        console.log('Ignoring bad node.', node.id);
+      }
+
+      return contact;
+    });
   }
 }
 util.inherits(ContactListMonitor, EventEmitter);
