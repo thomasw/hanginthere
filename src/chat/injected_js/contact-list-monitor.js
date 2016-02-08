@@ -8,6 +8,7 @@ class Contact {
   constructor(config) {
     this.node = config.node;
 
+    this.position = config.position;
     this.name = this._getName();
     this.iconURL = this._getIconURL();
     this.text = this._getText();
@@ -64,49 +65,68 @@ class Contact {
 
 class ContactListMonitor {
   constructor(config) {
-    this._Observer = config.Observer;
-    this.contactList = null;
+    this.contactListNode = null;
+    this.badNodes = [];
+    this.contactList = [];
+    this.contacts = {};
 
-    this.observer = new this._Observer(this._parseMutations.bind(this));
+    this._Observer = config.Observer;
+    this._observer = new this._Observer(this._parseMutations.bind(this));
   }
 
   observe(target) {
     console.log('Monitoring Contact List for new messages.');
 
-    this.contactList = target;
+    this.contactListNode = target;
 
-    this.observer.observe(target, {childList: true});
+    this._observer.observe(this.contactListNode, {childList: true});
 
-    this.emit('contact-list-update', this.getContactList());
+    this._parseMutations();
   }
 
   stop() {
-    this.observer.disconnect();
+    this._observer.disconnect();
 
     console.log('Contact List monitoring ended.');
   }
 
   _parseMutations() {
-    this.emit('contact-list-update', this.getContactList());
+    this.contactList = this._getContactList();
   }
 
-  getContactList() {
-    return _.map(this.contactList.children, node => {
-      let contact;
-
-      if(_.includes(this.badNodes, node.id)) {
-        return;
-      }
-
-      try {
-        contact = new Contact({node: node});
-      } catch (e) {
-        console.error(e);
-        console.log('Ignoring bad node.', node.id);
-      }
-
-      return contact;
+  _getContactList() {
+    let cl = _.map(this.contactListNode.children, (node, idx) => {
+      this._updateContact(idx, node);
+      return node.id;
     });
+
+    return _.difference(cl, this.badNodes);
+  }
+
+  _updateContact(idx, contactNode) {
+    let contact = this._getOrIgnoreContact(contactNode, idx);
+
+    if(!contact) { return; }
+    if(_.isEqual(this.contacts[contact.id], contact)) { return; }
+
+    this.contacts[contact.id] = contact;
+    this.emit('contact-update', contact);
+  }
+
+  _getOrIgnoreContact(node, position) {
+    if (_.includes(this.badNodes, node.id)) { return; }
+
+    try {
+      return new Contact({node: node, position: position});
+    } catch(e) {
+      this._ignoreNode(node, e);
+      return;
+    }
+  }
+
+  _ignoreNode(node, e) {
+    console.log(`Bad contact node (${node.id}). Ignoring.`, e);
+    this.badNodes.push(node.id);
   }
 }
 util.inherits(ContactListMonitor, EventEmitter);
