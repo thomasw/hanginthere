@@ -6,7 +6,10 @@ import AccountSelector from './containers/AccountSelector'
 import ChatWindows from './containers/ChatWindows'
 import Loader from './containers/Loader'
 import chatAppReducer from './reducers'
-import { updateAccounts, activateAccount, setLoading } from './actions'
+import {
+  updateAccounts, activateAccount, setLoading, setUnreadCounts
+} from './actions'
+import { sum, isEqual } from 'lodash';
 
 /*global ipcRenderer:false */
 
@@ -19,8 +22,30 @@ const stateLogger = () => {
   console.log('State update:', store.getState())
 };
 
+const updateUnreadCounts = () => {
+  let state = store.getState()
+  let accounts = state.accounts
+  let contacts = state.contacts
+  let oldUnreadCounts = accounts.map((acc) => { return acc.unreadCount })
+  let unreadCounts = new Array(accounts.length).fill(0)
+
+  Object.keys(contacts).forEach((key) => {
+    let contact = contacts[key]
+    let account = contact.account
+
+    unreadCounts[account] = unreadCounts[account] + contact.unreadCount
+  });
+
+  if(!isEqual(unreadCounts, oldUnreadCounts)) {
+    store.dispatch(setUnreadCounts(unreadCounts))
+    ipcRenderer.send('update-dock-count', sum(unreadCounts))
+  }
+}
+
 stateLogger()
+
 store.subscribe(stateLogger)
+store.subscribe(updateUnreadCounts)
 
 ipcRenderer.on('accounts-update', (e, accounts) => {
   let selectedAccount = store.getState().selectedAccount;
