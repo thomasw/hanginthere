@@ -12,6 +12,7 @@ export default class ChatList extends Component {
             key={account.id}
         >
           <Chat id={account.id}
+              onContactUpdate={this.props.onContactUpdate}
               selected={account.id === this.props.selectedAccount}
           />
         </li>)
@@ -24,5 +25,6 @@ export default class ChatList extends Component {
 ChatList.propTypes = {
   accounts: PropTypes.arrayOf(
     PropTypes.shape(Chat.PropTypes).isRequired).isRequired,
+  onContactUpdate: PropTypes.func.isRequired,
   selectedAccount: PropTypes.number
 }

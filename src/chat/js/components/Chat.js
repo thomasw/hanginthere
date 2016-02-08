@@ -7,29 +7,42 @@ import path from 'path';
 export default class Chat extends Component {
 
   componentDidMount() {
-    let webview = ReactDOM.findDOMNode(this);
-    webview.addEventListener('did-get-response-details', this.injectCss);
-    webview.send('hello');
-    webview.addEventListener('ipc-message', (e) => {
-      console.log(e.srcElement.id, e.args[0]);
-    });
-    webview.addEventListener('console-message', this.logMessage);
+    let webview = ReactDOM.findDOMNode(this)
+
+    webview.addEventListener('did-get-response-details', this.injectCss)
+    webview.addEventListener('ipc-message', this.handleContactUpdate.bind(this))
+    webview.addEventListener('console-message', this.logMessage)
   }
 
   componentWillUnmount() {
-    this.removeEventListener('did-get-response-details', this.injectCss);
+    let webview = ReactDOM.findDOMNode(this)
+
+    webview.removeEventListener('did-get-response-details', this.injectCss)
+    webview.removeEventListener('console-message', this.logMessage)
+    webview.removeEventListener('ipc-message', this.handleContactUpdate)
+  }
+
+  handleContactUpdate(e) {
+    let contact = e.args[0];
+
+    if(e.channel !== 'contact-update' || !contact) { return; }
+
+    contact.id = `${this.props.id}${contact.id}`
+    contact.account = this.props.id
+
+    this.props.onContactUpdate(contact);
   }
 
   injectCss(e) {
     let cssPath = path.join(chat_dir, 'css/injected.css')
+
     fs.readFile(cssPath, 'utf8', (err, data) => {
       e.srcElement.insertCSS(data)
     })
   }
 
   logMessage(e) {
-    console.log(
-      `Chat WebView (${e.srcElement.id}):`, e.level, e.message);
+    console.log(`Chat WebView (${e.srcElement.id}):`, e.level, e.message);
   }
 
   render () {
@@ -45,5 +58,6 @@ export default class Chat extends Component {
 }
 
 Chat.propTypes = {
-  id: PropTypes.number.isRequired
+  id: PropTypes.number.isRequired,
+  onContactUpdate: PropTypes.func.isRequired
 }
