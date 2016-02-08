@@ -81,9 +81,6 @@ body {
   background-clip: padding-box;
 }
 
-#chat-windows, #chat-windows ul {
-}
-
 #chat-windows li {
   height: 100%;
   width: 100%;
@@ -91,18 +88,10 @@ body {
   top: 0;
   left: 100%;
   z-index: -1;
-  -webkit-transition: left 0.5s;
-}
-
-@keyframes slideIn {
-    0% { left: -100%; }
-    100% { left: 0; }
 }
 
 #chat-windows .selected {
   left: 0;
-  animation-name: slideIn;
-  animation-duration: 0.5s;
 }
 
 .hidden {
