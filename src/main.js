@@ -25,10 +25,7 @@ const bindWindowEvents = require('./window-events');
 let mainWindow;
 let accountManager = new AccountManager();
 let windowManager = new WindowManager();
-let dockNotifier = new DockNotifier({
-  dock: app.dock,
-  windowManager: windowManager
-});
+let dockNotifier = new DockNotifier({dock: app.dock});
 let menuBuilder = new MenuBuilder({
   appName: app.getName(),
   Menu: electron.Menu,
@@ -135,10 +132,7 @@ store.subscribe(() => {
 app.on('browser-window-created', (e, win) => { windowManager.addWindow(win); });
 app.on('browser-window-created', (e, win) => { bindWindowEvents(win); });
 
-app.on('browser-window-focus', dockNotifier.resetDock.bind(dockNotifier));
-app.on('activate', dockNotifier.resetDock.bind(dockNotifier));
-
-ipcMain.on('message-received', dockNotifier.messageReceived.bind(dockNotifier));
+ipcMain.on('update-dock-count', dockNotifier.dockAlert.bind(dockNotifier));
 ipcMain.on('add-account', addAccount);
 ipcMain.on('request-accounts', (e) => {
   e.sender.send('accounts-update', store.getState().accounts);
