@@ -20,6 +20,7 @@ body {
 
 #account-selector li{
   padding-top: 3px;
+  position: relative;
 }
 
 #account-selector button {
@@ -53,6 +54,20 @@ body {
 
 #account-selector .account-name {
   display: none;
+}
+
+.unreadCount {
+  width: 12px;
+  height: 12px;
+  padding: 5px;
+  margin: 0;
+  border-radius: 30px;
+  background: #D24A51;
+  color: #fff;
+  text-align: center;
+  position: absolute;
+  right: 0;
+  bottom: 15px;
 }
 
 #account-selector img {
@@ -92,10 +107,6 @@ body {
 
 #chat-windows .selected {
   left: 0;
-}
-
-.hidden {
-  display: none;
 }
 
 ul, li {

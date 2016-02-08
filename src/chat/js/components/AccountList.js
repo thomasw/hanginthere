@@ -16,6 +16,7 @@ export default class AccountList extends Component {
               id={account.id}
               name={account.name}
               onAccountSelect={this.props.onAccountSelect}
+              unreadCount={account.unreadCount}
           />
         </li>)
     })
@@ -35,7 +36,8 @@ AccountList.propTypes = {
     humanizedAccelerator: PropTypes.string,
     icon: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
+    unreadCount: PropTypes.number.isRequired
   }).isRequired).isRequired,
   onAccountSelect: PropTypes.func.isRequired,
   selectedAccount: PropTypes.number
