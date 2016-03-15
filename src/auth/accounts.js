@@ -5,7 +5,7 @@ const path = require('path');
 
 
 class AccountManager {
-  constructor(config) {
+  constructor() {
     this._url = 'https://accounts.google.com/SignOutOptions';
     this._invisible = true;
   }

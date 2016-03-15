@@ -4,88 +4,136 @@ const app = electron.app;
 const ipcMain = electron.ipcMain;
 const session = electron.session;
 
-const BrowserWindow = require('browser-window');
-const HangoutsWindow = require('./hangouts/hangouts-window');
+const createStore = require('redux').createStore;
+const actions = require('./actions');
+const appReducer = require('./reducers').appReducer;
+
+const store = createStore(appReducer);
+const stateLogger = () => {
+  console.log('State update:', store.getState());
+};
+
+const AccountManager = require('./auth/accounts');
+const LoginWindow = require('./auth/login-window');
+const ChatWindow = require('./chat/window');
 const WindowManager = require('./window-manager');
 const DockNotifier = require('./dock-notifier');
 
 const MenuBuilder = require('./menus');
 const bindWindowEvents = require('./window-events');
 
-
-let windowManager = new WindowManager({
-  BrowserWindow: BrowserWindow
-});
-let dockNotifier = new DockNotifier({
-  dock: app.dock,
-  windowManager: windowManager
-});
+let mainWindow;
+let accountManager = new AccountManager();
+let windowManager = new WindowManager();
+let dockNotifier = new DockNotifier({dock: app.dock});
 let menuBuilder = new MenuBuilder({
   appName: app.getName(),
-  Menu: electron.Menu
+  Menu: electron.Menu,
+  MenuItem: electron.MenuItem
 });
 
-function reload_window(menuItem, activeWindow) {
-  if (activeWindow) {
-    activeWindow.reload();
-  }
+
+stateLogger();
+
+function notifyMainOnAccountSelection(account) {
+  mainWindow.show();
+  mainWindow.webContents.send('account-selection', account);
 }
 
-function full_screen_window(menuItem, activeWindow) {
-  if (activeWindow) {
-    activeWindow.setFullScreen(!activeWindow.isFullScreen());
-  }
+function reloadWindow(menuItem, activeWindow) {
+  activeWindow && activeWindow.reload();
 }
 
-function toggle_dev_tools_for_window(menuItem, activeWindow) {
-  if (activeWindow) {
-    activeWindow.toggleDevTools();
-  }
+function fullScreenWindow(menuItem, activeWindow) {
+  activeWindow && activeWindow.setFullScreen(!activeWindow.isFullScreen());
 }
 
-function logout() {
-  session.defaultSession.clearStorageData(()=>{
+function toggleDevTools(menuItem, activeWindow) {
+  activeWindow && activeWindow.toggleDevTools();
+}
+
+function updateAccountData() {
+  return accountManager.getAccounts()
+    .then(actions.updateAccounts)
+    .then(store.dispatch);
+}
+
+function activateMainWindow() {
+  mainWindow.show();
+  mainWindow.focus();
+}
+
+function addAccount() {
+  new LoginWindow().on('account-added', updateAccountData);
+}
+
+function init() {
+  electron.Menu.setApplicationMenu(menuBuilder.getMenu());
+
+  mainWindow = new ChatWindow();
+
+  updateAccountData().catch((error) => {
+    console.log('Unable to retrieve account data.', error);
     app.quit();
   });
 }
 
-function initialize_menu() {
-  electron.Menu.setApplicationMenu(menuBuilder.menu);
+function appReset() {
+  session.defaultSession.clearStorageData(()=>{
+    store.dispatch(actions.reset());
+
+    mainWindow && mainWindow.makeCloseable();
+    windowManager.closeAll();
+
+    init();
+  });
 }
 
-function initialize_hangouts_window() {
-  new HangoutsWindow();
-}
+menuBuilder.on('add-account', addAccount);
+menuBuilder.on('quit', app.quit);
+menuBuilder.on('reload', reloadWindow);
+menuBuilder.on('fullscreen', fullScreenWindow);
+menuBuilder.on('devtools', toggleDevTools);
+menuBuilder.on('cycle-windows', () => { windowManager.activateNextWindow(); });
+menuBuilder.on('logout', appReset);
+menuBuilder.on('account-selected', notifyMainOnAccountSelection);
+menuBuilder.on('next-account', () => {
+  mainWindow.show();
+  mainWindow.webContents.send('next-account');
+});
+menuBuilder.on('previous-account', () => {
+    mainWindow.show();
+    mainWindow.webContents.send('previous-account');
+});
 
-function track_window(e, window) {
-  bindWindowEvents(window);
-  windowManager.addWindow(window);
-}
+app.on('before-quit', () => { mainWindow.makeCloseable(); });
+app.on('ready', init);
+app.on('account-data-update', activateMainWindow);
+app.on('window-all-closed', () => {}); // Prevent the default (app closes)
 
-function windowsAllClosed() {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-}
+store.subscribe(stateLogger);
+store.subscribe(() => {
+    let accounts = store.getState().accounts;
 
-menuBuilder.on('new_window-clicked', initialize_hangouts_window);
-menuBuilder.on('quit-clicked', app.quit);
-menuBuilder.on('reload-clicked', reload_window);
-menuBuilder.on('full_screen-clicked', full_screen_window);
-menuBuilder.on('dev_tools-clicked', toggle_dev_tools_for_window);
-menuBuilder.on(
-  'next_window-clicked', windowManager.activateNextWindow.bind(windowManager));
-menuBuilder.on('log_out-clicked', logout);
+    if (accounts.length === 0) {
+      addAccount();
+      return;
+    }
 
-app.on('ready', initialize_hangouts_window);
-app.on('ready', initialize_menu);
+    if (!mainWindow.isVisible()) {
+      activateMainWindow();
+    }
 
-app.on('browser-window-created', track_window);
-app.on('window-all-closed', windowsAllClosed);
+    electron.Menu.setApplicationMenu(menuBuilder.getMenuWithAccounts(accounts));
 
-app.on('browser-window-focus', dockNotifier.resetDock.bind(dockNotifier));
-app.on('activate', dockNotifier.resetDock.bind(dockNotifier));
+    mainWindow.webContents.send('accounts-update', accounts);
+});
 
-ipcMain.on('message-received', dockNotifier.messageReceived.bind(dockNotifier));
+app.on('browser-window-created', (e, win) => { windowManager.addWindow(win); });
+app.on('browser-window-created', (e, win) => { bindWindowEvents(win); });
+
+ipcMain.on('update-dock-count', dockNotifier.dockAlert.bind(dockNotifier));
+ipcMain.on('add-account', addAccount);
+ipcMain.on('request-accounts', (e) => {
+  e.sender.send('accounts-update', store.getState().accounts);
+});

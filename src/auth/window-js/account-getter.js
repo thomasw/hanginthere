@@ -12,10 +12,13 @@ function getAccountData() {
   var accountSelector = '#account-list li[id^="account"]';
 
   _.each(document.querySelectorAll(accountSelector), function(data) {
-    var nameEl = data.querySelector('.account-name') || {};
-    var emailEl = data.querySelector('.account-email') || {};
-    var iconURL;
-    var accountID;
+    let nameEl = data.querySelector('.account-name') || {};
+    let emailEl = data.querySelector('.account-email') || {};
+    let humanizedAccelerator = '';
+    let iconURL;
+    let accountId;
+    let accelerator;
+    let selectorId;
 
     try {
       iconURL = data.querySelector('img').getAttribute('src');
@@ -24,24 +27,45 @@ function getAccountData() {
     }
 
     try {
-      accountID = data.querySelector('button').getAttribute('id');
-      accountID = accountID.split('choose-account-').join('');
+      accountId = data.querySelector('button').getAttribute('id');
+      accountId = accountId.split('choose-account-').join('');
+      accountId = parseInt(accountId);
     } catch(e) {
       console.error('Couldn\'t retrieve account ID, skipping.', e);
       return;
-     }
+    }
+
+    selectorId = (accountId + 1) % 10;
+
+    if (accountId < 10) {
+      accelerator = `CmdOrCtrl+${selectorId}`;
+      humanizedAccelerator = humanizeAccelrator(accelerator, remote.process.platform);
+    }
 
     accountList.push({
       name: nameEl.innerText,
       email: emailEl.innerText,
-      id: accountID,
-      icon: iconURL
+      id: accountId,
+      icon: 'https:' + iconURL,
+      selectorId: selectorId,
+      accelerator: accelerator,
+      humanizedAccelerator: humanizedAccelerator
     });
   });
 
   curWindow.emit('account-data-loaded', accountList);
 
   console.log('Account data', accountList);
+}
+
+function humanizeAccelrator(accelerator, platform) {
+  let humanizedAccelerator = accelerator.replace('CmdOrCtrl+', 'Ctrl')
+
+  if(platform === 'darwin') {
+    humanizedAccelerator = accelerator.replace('CmdOrCtrl+', '⌘');
+  }
+
+  return humanizedAccelerator;
 }
 
 document.addEventListener('DOMContentLoaded', getAccountData);

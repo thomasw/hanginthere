@@ -10,9 +10,9 @@ class LoginWindow extends BrowserWindow {
 
     var defaults = {
       minWidth: 800,
-      minHeight: 768,
+      minHeight: 800,
       width: 800,
-      height: 768,
+      height: 800,
       title: 'HangInThere',
       icon: path.join(__dirname, '../img/icon.png'),
       titleBarStyle: 'hidden-inset'
@@ -43,10 +43,7 @@ class LoginWindow extends BrowserWindow {
     this.loginSuccess();
   }
 
-  _LoginRedirectCheck(
-      e, oldURL, newURL, mainFrame,httpResponseCode, requestMethod, referrer,
-      headers)
-  {
+  _LoginRedirectCheck(e, oldURL, newURL, mainFrame) {
     console.log(`LoginWindow redirecting from ${oldURL} to ${newURL}.`);
 
     if(!mainFrame || !newURL.startsWith(this.success_url)) { return; }
@@ -56,6 +53,8 @@ class LoginWindow extends BrowserWindow {
 
   loginSuccess() {
     console.log('Account added succesfully.');
+
+    this.emit('account-added');
 
     this.destroy();
   }
