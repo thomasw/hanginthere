@@ -4,6 +4,12 @@
   display: none !important;
 }
 
+/* Chrome install button in main nav */
+
+.z80M1.ymQQQ {
+  display: none;
+}
+
 /* Reposition logo and hamburger to accomodate window controls */
 
 /* Hamburger */
