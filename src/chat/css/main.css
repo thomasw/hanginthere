@@ -109,6 +109,10 @@ body {
   left: 0;
 }
 
+#chat-windows webview {
+  height: 100%;
+}
+
 ul, li {
   display: block;
   margin: 0;
