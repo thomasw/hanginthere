@@ -5,7 +5,7 @@ console.info('Preload script injected.');
 const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
 const webFrame = require('web-frame');
-const SpellCheckProvider = require('./spellcheck-provider');
+const SpellCheckProvider = require('electron-spell-check-provider');
 const ContactListMonitor = require('./contact-list-monitor');
 
 const locale = remote.app.getLocale();
@@ -29,7 +29,12 @@ function monitorContactList() {
   contactListMonitor.observe(contactList);
 }
 
-webFrame.setSpellCheckProvider(locale, true, SpellCheckProvider);
+
+if(locale == 'en-US') {
+  webFrame.setSpellCheckProvider(locale, true, new SpellCheckProvider(locale));
+  console.log('Spellcheck provided.');
+}
+
 document.addEventListener('DOMContentLoaded', monitorContactList);
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelector(logoSel).addEventListener('click', (e) => {
