@@ -9,7 +9,7 @@ const ContactListMonitor = require('./contact-list-monitor');
 const locale = remote.app.getLocale();
 
 const clIframeSel = '#gtn-roster-iframe-id-b';
-const clDataContainerSel = '.c-m.c-m-Ed.al.Mz.Ln';
+const clDataContainerSel = '.c-m.c-m-Ed';
 const logoSel= '#gbq1 a';
 
 var contactListMonitor = new ContactListMonitor({Observer: MutationObserver});
@@ -18,7 +18,6 @@ function monitorContactList() {
   var contactList = document.querySelector(clIframeSel);
   contactList = contactList && contactList.contentDocument;
   contactList = contactList && contactList.querySelector(clDataContainerSel);
-
   if(!contactList) {
     setTimeout(monitorContactList, 2000);
     return;
