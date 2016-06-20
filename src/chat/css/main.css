@@ -13,7 +13,6 @@ body {
 
   height: 78px;
   width: 100%;
-  border: 1px solid red;
 
   box-sizing: border-box;
   -webkit-app-region: drag;
