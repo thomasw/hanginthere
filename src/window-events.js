@@ -2,11 +2,10 @@
 
 const {shell} = require('electron');
 
-const videoChatURLs = [
-  'https://talkgadget.google.com/', 'https://plus.google.com/hangouts/'];
 const allowedUrlPrefixes = [
-  'https://hangouts.google.com/', 'https://accounts.google.com/'
-].concat(videoChatURLs);
+  'https://hangouts.google.com/',
+  'https://accounts.google.com/'
+];
 
 const disallowedUrlPrefixes = ['https://accounts.google.com/TOS'];
 
