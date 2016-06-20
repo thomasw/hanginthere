@@ -1,6 +1,6 @@
 'use strict';
 
-const shell = require('shell');
+const {shell} = require('electron');
 
 const videoChatURLs = [
   'https://talkgadget.google.com/', 'https://plus.google.com/hangouts/'];

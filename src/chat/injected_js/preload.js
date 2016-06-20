@@ -2,9 +2,7 @@
 
 console.info('Preload script injected.');
 
-const remote = require('electron').remote;
-const ipcRenderer = require('electron').ipcRenderer;
-const webFrame = require('web-frame');
+const {remote, ipcRenderer, webFrame} = require('electron');
 const SpellCheckProvider = require('electron-spell-check-provider');
 const ContactListMonitor = require('./contact-list-monitor');
 

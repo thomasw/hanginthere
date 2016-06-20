@@ -1,6 +1,6 @@
 'use strict';
 
-const BrowserWindow = require('browser-window');
+const {BrowserWindow} = require('electron');
 
 
 class WindowManager {
