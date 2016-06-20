@@ -9,5 +9,6 @@ On OS X, execute the following:
 
 ```shell
 npm install
+./node_modules/.bin/electron-rebuild
 npm run build
 ```
