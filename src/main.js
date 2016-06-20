@@ -14,8 +14,8 @@ const stateLogger = () => {
 };
 
 const AccountManager = require('./auth/accounts');
-const LoginWindow = require('./auth/login-window');
-const ChatWindow = require('./chat/window');
+const createLoginWindow = require('./auth/login-window');
+const createChatWindow = require('./chat/window');
 const WindowManager = require('./window-manager');
 const DockNotifier = require('./dock-notifier');
 
@@ -64,13 +64,13 @@ function activateMainWindow() {
 }
 
 function addAccount() {
-  new LoginWindow().on('account-added', updateAccountData);
+  createLoginWindow().on('account-added', updateAccountData);
 }
 
 function init() {
   electron.Menu.setApplicationMenu(menuBuilder.getMenu());
 
-  mainWindow = new ChatWindow();
+  mainWindow = createChatWindow();
 
   updateAccountData().catch((error) => {
     console.log('Unable to retrieve account data.', error);

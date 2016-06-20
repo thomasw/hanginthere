@@ -1,64 +1,67 @@
 'use strict';
 
-const BrowserWindow = require('browser-window');
+const {BrowserWindow} = require('electron');
 const _ = require('lodash');
 const path = require('path');
 
-class LoginWindow extends BrowserWindow {
 
-  constructor(settings) {
+const _defaults = {
+  minWidth: 800,
+  minHeight: 800,
+  width: 800,
+  height: 800,
+  title: 'HangInThere',
+  icon: path.join(__dirname, '../img/icon.png'),
+  titleBarStyle: 'hidden-inset'
+};
 
-    var defaults = {
-      minWidth: 800,
-      minHeight: 800,
-      width: 800,
-      height: 800,
-      title: 'HangInThere',
-      icon: path.join(__dirname, '../img/icon.png'),
-      titleBarStyle: 'hidden-inset'
-    };
 
-    super(_.assign({}, defaults, settings));
+function _LoginNavCheck(e, url) {
+  console.log('Login window navigating:', url);
 
-    this.success_url = 'https://hangouts.google.com/';
-
-    this.loadURL(
-      'https://accounts.google.com/AddSession' +
-      '?service=talk&continue=https://hangouts.google.com/#identifier'
-    );
-
-    this.webContents.on('will-navigate', this._LoginNavCheck.bind(this));
-    this.webContents.on(
-      'did-get-redirect-request', this._LoginRedirectCheck.bind(this));
-
+  if(!url.startsWith(this.success_url)) {
+    return;
   }
 
-  _LoginNavCheck(e, url) {
-    console.log('Login window navigating:', url);
-
-    if(!url.startsWith(this.success_url)) {
-      return;
-    }
-
-    this.loginSuccess();
-  }
-
-  _LoginRedirectCheck(e, oldURL, newURL, mainFrame) {
-    console.log(`LoginWindow redirecting from ${oldURL} to ${newURL}.`);
-
-    if(!mainFrame || !newURL.startsWith(this.success_url)) { return; }
-
-    this.loginSuccess();
-  }
-
-  loginSuccess() {
-    console.log('Account added succesfully.');
-
-    this.emit('account-added');
-
-    this.destroy();
-  }
-
+  this.loginSuccess();
 }
 
-module.exports = LoginWindow;
+function _LoginRedirectCheck(e, oldURL, newURL, mainFrame) {
+  console.log(`LoginWindow redirecting from ${oldURL} to ${newURL}.`);
+
+  if(!mainFrame || !newURL.startsWith(this.success_url)) { return; }
+
+  this.loginSuccess();
+}
+
+function _loginSuccess() {
+  console.log('Account added succesfully.');
+
+  this.emit('account-added');
+
+  this.destroy();
+}
+
+function createLoginWindow(settings) {
+
+  let window = new BrowserWindow(_.assign({}, _defaults, settings));
+
+  window.success_url = 'https://hangouts.google.com/';
+
+  window.loadURL(
+    'https://accounts.google.com/AddSession' +
+    '?service=talk&continue=https://hangouts.google.com/#identifier'
+  );
+
+  window._LoginRedirectCheck = _LoginRedirectCheck.bind(window);
+  window._LoginNavCheck = _LoginNavCheck.bind(window);
+  window.loginSuccess = _loginSuccess.bind(window);
+
+  window.webContents.on('will-navigate', window._LoginNavCheck.bind(window));
+  window.webContents.on(
+    'did-get-redirect-request', window._LoginRedirectCheck.bind(window));
+
+  return window;
+}
+
+module.exports = createLoginWindow;
