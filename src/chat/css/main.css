@@ -5,7 +5,18 @@ html {
 body {
   background: #000;
   margin: 0;
-  padding: 0;
+  padding-left: 60px
+}
+
+#dragbar {
+  float: left;
+
+  height: 78px;
+  width: 100%;
+  border: 1px solid red;
+
+  box-sizing: border-box;
+  -webkit-app-region: drag;
 }
 
 #account-selector {

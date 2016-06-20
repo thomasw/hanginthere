@@ -21,11 +21,3 @@
 #gbq1 {
   margin-left: 15px !important;
 }
-
-.g-Ue-kc-Sc1lPb, .g-Ue-OkO9ve  {
-  -webkit-app-region: drag;
-}
-
-iframe {
-  -webkit-app-region: no-drag;
-}
